@@ -21,4 +21,7 @@ Imports:
     stats,
     dplyr,
     tibble,
+    jsonlite,
+    readr,
+    stringr
 BugReports: https://github.com/queelius/md.tools/issues
