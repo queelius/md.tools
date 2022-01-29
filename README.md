@@ -19,3 +19,8 @@ devtools::install_github("queelius/md.tools")
 ```
 
 ## Usage
+
+``` r
+1
+#> [1] 1
+```
