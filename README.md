@@ -15,7 +15,11 @@ You can install the development version of `md.tools` from
 
 ``` r
 install.packages("devtools")
+#> Installing package into '/usr/local/lib/R/site-library'
+#> (as 'lib' is unspecified)
 devtools::install_github("queelius/md.tools")
+#> Skipping install of 'md.tools' from a github remote, the SHA1 (b1629b68) has not changed since last install.
+#>   Use `force = TRUE` to force installation
 ```
 
 ## Usage

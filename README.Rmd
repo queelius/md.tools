@@ -24,7 +24,7 @@ Masked data tools.
 
 You can install the development version of `md.tools` from [GitHub](https://github.com/) with:
 
-```{r,eval=F}
+```{r}
 install.packages("devtools")
 devtools::install_github("queelius/md.tools")
 ```

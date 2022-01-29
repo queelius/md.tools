@@ -21,6 +21,7 @@ data fame \code{df} as the columns \code{var.1},...,\code{var.p} or
 }
 \details{
 A matrix will be returned with the appropriate ordering denoted by the
-index, e.g., \code{a.2} will come before \code{a.4}. If a column labeled
-\code{a.3} is missing, we just make \code{a.2} and \code{a.4} adjacent.
+index, e.g., \code{a.2} will come before \code{a.4}. There should be no
+gaps in the matrix indexes, e.g., if there is \code{a.4} then there must
+be \code{a.1,a.2,a.3}.
 }

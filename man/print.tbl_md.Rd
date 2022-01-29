@@ -10,6 +10,8 @@
 \item{x}{masked data to print}
 
 \item{drop_latent}{Boolean, drop the latent random variables}
+
+\item{...}{additional arguments to pass}
 }
 \description{
 Print method for masked data (\code{tbl_md}).

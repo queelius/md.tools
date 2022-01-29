@@ -42,19 +42,17 @@ md_read_json <- function(filename)
   metadata <- jsonlite::read_json(filename)
   dataset <- metadata[["dataset"]]
 
-  mds <- list()
+  ds <- list()
   for (data in dataset)
   {
     data.path <- file.path(dirname(filename),data)
-    md <- readr::read_csv(data.path,col_types=list(k="i",w="i"))
+    d <- readr::read_csv(data.path)
     tmp <- metadata
     tmp[["dataset"]] <- c(data)
-    attributes(md) <- c(attributes(md),tmp)
-    class(md) <- c("tbl_md",class(md))
-
-    mds[[data]] <- md
+    attributes(d) <- c(attributes(d),tmp)
+    mds[[data]] <- md(d)
   }
-  mds
+  ds
 }
 
 #' Obtain a list of latent variables from masked data.
@@ -95,8 +93,9 @@ md_unmark_latent <- function(md, vars)
 #' \code{var1},...,\code{varp}.
 #'
 #' A matrix will be returned with the appropriate ordering denoted by the
-#' index, e.g., \code{a.2} will come before \code{a.4}. If a column labeled
-#' \code{a.3} is missing, we just make \code{a.2} and \code{a.4} adjacent.
+#' index, e.g., \code{a.2} will come before \code{a.4}. There should be no
+#' gaps in the matrix indexes, e.g., if there is \code{a.4} then there must
+#' be \code{a.1,a.2,a.3}.
 #'
 #' @param df data frame that contains the matrix
 #' @param var the symbolic name of the matrix
@@ -106,12 +105,12 @@ matrix_from <- function(df,var)
 {
   int_pat <- "[[:digit:]]+"
   pat <- paste0(var,"\\.?(",int_pat,")")
-  cols <- colnames(A)[grepl(pat,colnames(A),ignore.case=F)]
-  if (purrr::is_empty(A) == 0)
+  cols <- colnames(df)[grepl(pat,colnames(df),ignore.case=F)]
+  if (purrr::is_empty(cols) == 0)
     NA
 
-  order <- as.integer(stringr::str_replace(cols,pat,"\\1"))
-  as.matrix((df[cols])[,order])
+  rank <- as.integer(stringr::str_replace(cols,pat,"\\1"))
+  as.matrix(df[cols][,order(rank)])
 }
 
 #' Map boolean matrix defined by \code{var}, as described in
@@ -126,15 +125,17 @@ boolean_matrix_to_integer_list <- function(df,var,name=NULL)
   if (is.null(name))
     name <- var
 
-  stopifnot(!(var %in% colnames(df)))
+  stopifnot(!(name %in% colnames(df)))
   A <- matrix_from(df,var)
   stopifnot(!is.na(A))
 
   m <- ncol(A)
   ints <- list()
   for (i in 1:nrow(df))
+  {
     ints[[i]] <- (1:m)[A[i,]]
-  df[var] <- list(ints)
+  }
+  df[name] <- list(ints)
   df
 }
 
@@ -142,6 +143,7 @@ boolean_matrix_to_integer_list <- function(df,var,name=NULL)
 #'
 #' @param x masked data to print
 #' @param drop_latent Boolean, drop the latent random variables
+#' @param ... additional arguments to pass
 #' @importFrom dplyr %>%
 #' @export
 print.tbl_md <- function(x,drop_latent=F,...)
@@ -151,7 +153,7 @@ print.tbl_md <- function(x,drop_latent=F,...)
 
   NextMethod(...)
 
-  if (is_empty(md_latent(x)))
+  if (purrr::is_empty(md_latent(x)))
     cat("latent variables: NONE\n")
   else
     cat("latent variables: ", md_latent(x), "\n")
@@ -176,7 +178,7 @@ is_md <- function(x)
 #' @export
 md <- function(x)
 {
-  x <- as_tibble(x)
+  x <- tibble::as_tibble(x)
   class(x) <- unique(c("tbl_md",class(x)))
   attr(x,"latent") <- c()
   x
