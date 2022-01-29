@@ -10,6 +10,8 @@ boolean_matrix_to_integer_list(df, var, name = NULL)
 \arguments{
 \item{df}{masked data}
 
+\item{var}{symbolic variable used to represent the matrix}
+
 \item{name}{column name of matrix strings}
 }
 \description{

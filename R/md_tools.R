@@ -57,71 +57,19 @@ md_read_json <- function(filename)
   mds
 }
 
-#' Convert the columns corresponding to the
-#' candidate matrix to a matrix object.
+#' Obtain a list of latent variables from masked data.
 #'
-#' @param md masked data
-#' @return Candidate sets represented as a Boolean matrix
-#'
-#' @export
-md_candidates_as_matrix <- function(md)
-{
-  c <- dplyr::select(md, dplyr::starts_with("c."))
-  if (ncol(c) == 0)
-    NA
-  else
-  {
-    names(c) <- NULL
-    as.matrix(c)
-  }
-}
-
-#' Convert the columns corresponding to the
-#' node times matrix to a matrix object.
-#'
-#' @param md masked data
-#' @return Node times represented as a real matrix
-#'
-#' @export
-md_node_times_as_matrix <- function(md)
-{
-  t <- dplyr::select(md, dplyr::starts_with("t."))
-  if (ncol(t) == 0)
-    NA
-  else
-  {
-    names(t) <- NULL
-    as.matrix(t)
-  }
-}
-
-#' Infer the number of components in a system from a data frame.
-#'
-#' A component in a system is something that, for the sake of the analysis,
-#' cannot be decomposed into more parts.
-#'
-#' @param df data frame object
-#' @return inferred number of components in \code{df}
-#'
-#' @export
-infer_num_comp <- function(df,pat=NULL)
-{
-  if (!is.null(attr(md,"num_comp")))
-  {
-    as.integer(attr(md,"nun_comp"))
-  }
-  else
-  {
-    1
-  }
-}
-
+#' @param md masked data to retrieve latent variables from.
 #' @export
 md_latent <- function(md)
 {
   attr(md,"latent")
 }
 
+#' Mark a variable in a masked data frame as latent.
+#'
+#' @param md masked data to modify
+#' @param vars variables to mark as latent.
 #' @export
 md_mark_latent <- function(md, vars)
 {
@@ -129,6 +77,10 @@ md_mark_latent <- function(md, vars)
   md
 }
 
+#' Mark a variable in a masked data frame as latent.
+#'
+#' @param md masked data to modify
+#' @param vars variables to mark as latent.
 #' @export
 md_unmark_latent <- function(md, vars)
 {
@@ -166,7 +118,7 @@ matrix_from <- function(df,var)
 #' \code{matrix_from}, to a list of vector of integers.
 #'
 #' @param df masked data
-#' @param var
+#' @param var symbolic variable used to represent the matrix
 #' @param name column name of matrix strings
 #' @export
 boolean_matrix_to_integer_list <- function(df,var,name=NULL)
@@ -205,12 +157,23 @@ print.tbl_md <- function(x,drop_latent=F,...)
     cat("latent variables: ", md_latent(x), "\n")
 }
 
-
+#' Test whether an object is a masked data (\code{tbl_md}).
+#'
+#' @param x object to determine if masked data
+#' @export
 is_md <- function(x)
 {
   inherits(x,"tbl_md")
 }
 
+#' Constructor for masked data.
+#'
+#' Takes an object \code{x} and converts it to masked data, a tibble (data
+#' frame) with some extra attributes, e.g., \code{latent} attribute to specify
+#' which variables are latent in the model.
+#'
+#' @param x object to convert to masked data.
+#' @export
 md <- function(x)
 {
   x <- as_tibble(x)

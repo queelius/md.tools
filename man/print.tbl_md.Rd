@@ -2,17 +2,15 @@
 % Please edit documentation in R/md_tools.R
 \name{print.tbl_md}
 \alias{print.tbl_md}
-\title{Print method for masked data (tbl_md).}
+\title{Print method for masked data (\code{tbl_md}).}
 \usage{
-\method{print}{tbl_md}(x, drop_latent = F, boolean_matrix_to_str = NULL, ...)
+\method{print}{tbl_md}(x, drop_latent = F, ...)
 }
 \arguments{
 \item{x}{masked data to print}
 
 \item{drop_latent}{Boolean, drop the latent random variables}
-
-\item{pprint}{Boolean, show candidates as a string column}
 }
 \description{
-Print method for masked data (tbl_md).
+Print method for masked data (\code{tbl_md}).
 }
