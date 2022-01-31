@@ -28,16 +28,23 @@ You can install the development version of `md.tools` from [GitHub](https://gith
 install.packages("devtools")
 devtools::install_github("queelius/md.tools")
 library(tidyverse)
+library(md.tools)
 ```
 
 ## Example
 
 We demonstrate the use of `md.tools` with a simple data set:
 ```{r test1}
-
+knitr::kable(exp_series_data_1)
 ```
 
 ```{r}
-exp_series_data_1 <- read_csv("./raw-data/exp_series_data_1.csv")
-usethis::use_data(exp_series_data_1, overwrite = TRUE)
+df <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
+#usethis::use_data(exp_series_data_1, overwrite = TRUE)
+```
+
+```{r}
+df
+md.tools::boolean_matrix_to_integer_list(df,"c")
+
 ```

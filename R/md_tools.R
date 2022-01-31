@@ -8,23 +8,26 @@
 #' @export
 md_write_csv_with_meta <- function(df, file, comment="#")
 {
-  meta <- attributes(df)
-  meta[["names"]] <- NULL
-  meta[["row.names"]] <- NULL
-  meta[["problems"]] <- NULL
-  meta[["spec"]] <- NULL
   tmp <- tempfile()
-  md_write_json(tmp,meta,comment)
+  md_write_as_json(tmp,attributes(df),comment)
   readr::write_lines(paste0("# ",readLines(tmp)),file)
   readr::write_csv(df,file,append=T,col_names = T)
 }
 
-# helper function
-#
-# TODO: recursively explore x and only output to file
-#       those values that can be serialized and deserialized by jsonlite.
-md_write_json <- function(file,x,prefix="")
+#' helper function
+#'
+#' @param file connection
+#' @param ls object (typically list) to write as json
+#'
+#' TODO: recursively search x and only write those values that can be
+#'       serialized and deserialized by jsonlite.
+md_write_as_json <- function(file,ls)
 {
+  x[["names"]] <- NULL
+  x[["row.names"]] <- NULL
+  x[["problems"]] <- NULL
+  x[["spec"]] <- NULL
+
   jsonlite::write_json(x,file,simplifyVector=T,pretty=T)
 }
 
