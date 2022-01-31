@@ -27,10 +27,17 @@ You can install the development version of `md.tools` from [GitHub](https://gith
 ```{r}
 install.packages("devtools")
 devtools::install_github("queelius/md.tools")
+library(tidyverse)
 ```
 
-## Usage
+## Example
+
+We demonstrate the use of `md.tools` with a simple data set:
+```{r test1}
+
+```
 
 ```{r}
-1
+exp_series_data_1 <- read_csv("./raw-data/exp_series_data_1.csv")
+usethis::use_data(exp_series_data_1, overwrite = TRUE)
 ```

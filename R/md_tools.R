@@ -1,58 +1,73 @@
-#' Write masked data data frame (tibble) object to a CSV (comma separated file),
-#' optionally writing associated meta-data to a JSON file. In particular, meta-data
-#' in this case is defined as the attributes of the data frame object.
+#' Write data frame object to a CSV (comma separated file), optionally
+#' with associated attribute data (stored as JSON in comments)
 #'
-#' @param md a masked data frame
-#' @param filename filename for csv
-#' @param write.metadata write a separate
+#' @param df a data frame with attributes to write
+#' @param file filename for csv
+#' @param comment denotes a comment block
 #'
 #' @export
-md_write_csv <- function(md, filename, write.metadata=T)
+md_write_csv_with_meta <- function(df, file, comment="#")
 {
-  readr::write_csv(md, filename)
-  if (write.metadata)
-  {
-    metadata <- attributes(md)
-    metadata[["dataset"]] <- c(basename(filename))
-    metadata[["row.names"]] <- NULL
-    metadata[["names"]] <- NULL
-    metadata[["class"]] <- NULL
-
-    metadata.out <- paste(tools::file_path_sans_ext(filename),"json",sep=".")
-    jsonlite::write_json(metadata, metadata.out, pretty=T)
-  }
+  meta <- attributes(df)
+  meta[["names"]] <- NULL
+  meta[["row.names"]] <- NULL
+  meta[["problems"]] <- NULL
+  meta[["spec"]] <- NULL
+  tmp <- tempfile()
+  md_write_json(tmp,meta,comment)
+  readr::write_lines(paste0("# ",readLines(tmp)),file)
+  readr::write_csv(df,file,append=T,col_names = T)
 }
 
-#' Read masked data from a JSON file.
-#' If the JSON file has a 'dataset' field,
-#' then each member of this field is assumed
-#' to refer to a CSV file to read a masked
-#' data sample from.
+# helper function
+#
+# TODO: recursively explore x and only output to file
+#       those values that can be serialized and deserialized by jsonlite.
+md_write_json <- function(file,x,prefix="")
+{
+  jsonlite::write_json(x,file,simplifyVector=T,pretty=T)
+}
+
+# helper function
+md_read_json <- function(file,prefix="",max_lines=-1L)
+{
+  pat <- paste0("^\\s*",prefix)
+  lns <- grep(pat,readLines(file,n=max_lines),value=T)
+
+  parse <- NULL
+  pat <- paste0(pat,"(.*)")
+  for (ln in lns)
+    parse <- paste0(parse,gsub(pat,"\\1",ln))
+
+  jsonlite::parse_json(parse,simplifyVector=T)
+}
+
+
+#' Read a data frame table from a connection (e.g., url or filename).
 #'
-#' Any metadata in the JSON
-#' file is inserted into the attributes
-#' of the masked data samples.
-#'
-#' @param filename filename for csv
-#' @return list of masked data objects
+#' @param file a path to a file, a connection, or literal data
+#' @param read_meta whether to read in metadata to populate attributes
+#' @param comment comment indicator, defaults to "#'
+#' @param max_meta_lns limit metadata search to the indicated number of lines
+#' @param skip a number indicating how many of the first lines to skip
 #'
 #' @export
-md_read_json <- function(filename)
+md_read_csv_with_meta <- function(file,read_meta=T,comment="#",
+                                  max_meta_lns=1000,skip=0)
 {
-  metadata <- jsonlite::read_json(filename)
-  dataset <- metadata[["dataset"]]
+  metadata <- NULL
+  if (read_meta)
+    metadata <- md_read_json(file,comment,max_meta_lns)
 
-  ds <- list()
-  for (data in dataset)
-  {
-    data.path <- file.path(dirname(filename),data)
-    d <- readr::read_csv(data.path)
-    tmp <- metadata
-    tmp[["dataset"]] <- c(data)
-    attributes(d) <- c(attributes(d),tmp)
-    mds[[data]] <- md(d)
-  }
-  ds
+  df <- NULL
+  if (is.null(metadata) && is.null(metadata$col_types))
+    df <- readr::read_csv(file,comment=comment,skip=skip)
+  else
+    df <- readr::read_csv(file,comment=comment,skip=skip,
+                          col_types=metadata$col_types)
+
+  attributes(df) <- c(attributes(df),metadata)
+  df
 }
 
 #' Obtain a list of latent variables from masked data.
@@ -148,15 +163,15 @@ boolean_matrix_to_integer_list <- function(df,var,name=NULL)
 #' @export
 print.tbl_md <- function(x,drop_latent=F,...)
 {
+  if (!purrr::is_empty(md_latent(x)))
+    cat("Latent variables: ", md_latent(x), "\n")
+
+  cat(attributes(x))
+
   if (drop_latent)
     x <- x %>% dplyr::select(-intersect(md_latent(x),colnames(x)))
 
   NextMethod(...)
-
-  if (purrr::is_empty(md_latent(x)))
-    cat("latent variables: NONE\n")
-  else
-    cat("latent variables: ", md_latent(x), "\n")
 }
 
 #' Test whether an object is a masked data (\code{tbl_md}).
@@ -180,6 +195,5 @@ md <- function(x)
 {
   x <- tibble::as_tibble(x)
   class(x) <- unique(c("tbl_md",class(x)))
-  attr(x,"latent") <- c()
   x
 }
