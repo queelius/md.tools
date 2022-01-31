@@ -59,6 +59,11 @@
 <code>matrix_from</code>, to a list of vector of integers.</dd>
       </dl><dl><dt>
           
+          <code><a href="exp_series_data_1.html">exp_series_data_1</a></code> 
+        </dt>
+        <dd>Masked data for a series system with exponentially distributed nodes.</dd>
+      </dl><dl><dt>
+          
           <code><a href="is_md.html">is_md()</a></code> 
         </dt>
         <dd>Test whether an object is a masked data (<code>tbl_md</code>).</dd>
@@ -84,13 +89,9 @@
         <dd>Mark a variable in a masked data frame as latent.</dd>
       </dl><dl><dt>
           
-          <code><a href="md_read_json.html">md_read_json()</a></code> 
+          <code><a href="md_read_csv_with_meta.html">md_read_csv_with_meta()</a></code> 
         </dt>
-        <dd>Read masked data from a JSON file.
-If the JSON file has a 'dataset' field,
-then each member of this field is assumed
-to refer to a CSV file to read a masked
-data sample from.</dd>
+        <dd>Read a data frame table from a connection (e.g., url or filename).</dd>
       </dl><dl><dt>
           
           <code><a href="md_unmark_latent.html">md_unmark_latent()</a></code> 
@@ -98,11 +99,10 @@ data sample from.</dd>
         <dd>Mark a variable in a masked data frame as latent.</dd>
       </dl><dl><dt>
           
-          <code><a href="md_write_csv.html">md_write_csv()</a></code> 
+          <code><a href="md_write_csv_with_meta.html">md_write_csv_with_meta()</a></code> 
         </dt>
-        <dd>Write masked data data frame (tibble) object to a CSV (comma separated file),
-optionally writing associated meta-data to a JSON file. In particular, meta-data
-in this case is defined as the attributes of the data frame object.</dd>
+        <dd>Write data frame object to a CSV (comma separated file), optionally
+with associated attribute data (stored as JSON in comments)</dd>
       </dl><dl><dt>
           
           <code><a href="print.tbl_md.html">print(<i>&lt;tbl_md&gt;</i>)</a></code> 
