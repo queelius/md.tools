@@ -48,17 +48,17 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">md_write_as_json</span><span class="op">(</span><span class="va">file</span>, <span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">md_write_as_json</span><span class="op">(</span><span class="va">file</span>, <span class="va">ls</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>file</dt>
 <dd><p>connection</p></dd>
-<dt>x</dt>
-<dd><p>object to write as json</p>
-<p>TODO: recursively explore x and only output to file
-      those values that can be serialized and deserialized by jsonlite.</p></dd>
+<dt>ls</dt>
+<dd><p>object (typically list) to write as json</p>
+<p>TODO: recursively search x and only write those values that can be
+      serialized and deserialized by jsonlite.</p></dd>
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
