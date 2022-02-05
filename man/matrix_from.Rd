@@ -15,7 +15,7 @@ matrix_from(df, var)
 a matrix
 }
 \description{
-An \code{nrow(df)}-by-\code{p} boolean matrix \code{var} is encoded in
+An \code{nrow(df)}-by-\code{p} matrix \code{var} is encoded in
 data fame \code{df} as the columns \code{var.1},...,\code{var.p} or
 \code{var1},...,\code{varp}.
 }
@@ -23,5 +23,5 @@ data fame \code{df} as the columns \code{var.1},...,\code{var.p} or
 A matrix will be returned with the appropriate ordering denoted by the
 index, e.g., \code{a.2} will come before \code{a.4}. There should be no
 gaps in the matrix indexes, e.g., if there is \code{a.4} then there must
-be \code{a.1,a.2,a.3}.
+also be \code{a.1,a.2,a.3}.
 }

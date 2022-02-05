@@ -4,15 +4,15 @@
 \alias{md_write_as_json}
 \title{helper function}
 \usage{
-md_write_as_json(file, x)
+md_write_as_json(file, ls)
 }
 \arguments{
 \item{file}{connection}
 
-\item{x}{object to write as json
+\item{ls}{object (typically list) to write as json
 
-TODO: recursively explore x and only output to file
-      those values that can be serialized and deserialized by jsonlite.}
+TODO: recursively search x and only write those values that can be
+      serialized and deserialized by jsonlite.}
 }
 \description{
 helper function

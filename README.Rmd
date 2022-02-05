@@ -25,7 +25,7 @@ Masked data tools.
 You can install the development version of `md.tools` from [GitHub](https://github.com/) with:
 
 ```{r}
-install.packages("devtools")
+# install.packages("devtools")
 devtools::install_github("queelius/md.tools")
 library(tidyverse)
 library(md.tools)
@@ -35,7 +35,7 @@ library(md.tools)
 
 We demonstrate the use of `md.tools` with a simple data set:
 ```{r test1}
-knitr::kable(exp_series_data_1)
+knitr::kable(head(exp_series_data_1))
 ```
 
 ```{r}
@@ -44,7 +44,21 @@ df <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
 ```
 
 ```{r}
-df
 md.tools::boolean_matrix_to_integer_list(df,"c")
-
+md.tools::is_md(df)
+head(md.tools::matrix_from(df,"c"))
+head(md.tools::matrix_from(df,"t"))
+md.tools::md_latent(df)
+df <- md.tools::md_unmark_latent(df,"t.1")
+md.tools::md_latent(df)
+df <- md.tools::md_mark_latent(df,"k")
+md.tools::md_latent(df)
+df <- md.tools::md_unmark_latent(df,"k")
+md.tools::md_latent(df)
+df <- md.tools::md_mark_latent(df,"aabk")
+md.tools::md_latent(df)
+df <- md.tools::md_unmark_latent(df,"aabk")
+md.tools::md_latent(df)
+df <- md.tools::md_unmark_latent(df,"aabkasdfads")
+md.tools::md_latent(df)
 ```

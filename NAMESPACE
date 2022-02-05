@@ -2,6 +2,7 @@
 
 S3method(print,tbl_md)
 export(boolean_matrix_to_integer_list)
+export(encode_matrix)
 export(is_md)
 export(matrix_from)
 export(md)

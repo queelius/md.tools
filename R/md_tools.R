@@ -106,14 +106,14 @@ md_unmark_latent <- function(md, vars)
 
 #' Obtains a matrix from specified columns in a data frame.
 #'
-#' An \code{nrow(df)}-by-\code{p} boolean matrix \code{var} is encoded in
+#' An \code{nrow(df)}-by-\code{p} matrix \code{var} is encoded in
 #' data fame \code{df} as the columns \code{var.1},...,\code{var.p} or
 #' \code{var1},...,\code{varp}.
 #'
 #' A matrix will be returned with the appropriate ordering denoted by the
 #' index, e.g., \code{a.2} will come before \code{a.4}. There should be no
 #' gaps in the matrix indexes, e.g., if there is \code{a.4} then there must
-#' be \code{a.1,a.2,a.3}.
+#' also be \code{a.1,a.2,a.3}.
 #'
 #' @param df data frame that contains the matrix
 #' @param var the symbolic name of the matrix
@@ -155,6 +155,19 @@ boolean_matrix_to_integer_list <- function(df,var,name=NULL)
   }
   df[name] <- list(ints)
   df
+}
+
+#' Encodes a matrix as a data frame with specified columns.
+#'
+#' @param mat matrix
+#' @param var the symbolic name of the matrix (prefix of column names)
+#' @return a tibble (data frame) encoding of a matrix
+#' @export
+encode_matrix <- function(mat,var)
+{
+  t <- tibble::tibble(mat)
+  names(t) <- paste0(var,1:ncol(mat))
+  t
 }
 
 #' Print method for masked data (\code{tbl_md}).
