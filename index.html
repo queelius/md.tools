@@ -78,6 +78,15 @@
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"queelius/md.tools"</span><span class="op">)</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;      checking for file ‘/tmp/RtmpAE6R22/remotes1580b33da15d67/queelius-md.tools-61bfe53/DESCRIPTION’ ...  ✓  checking for file ‘/tmp/RtmpAE6R22/remotes1580b33da15d67/queelius-md.tools-61bfe53/DESCRIPTION’</span>
+<span class="co">#&gt;   ─  preparing ‘md.tools’:</span>
+<span class="co">#&gt;      checking DESCRIPTION meta-information ...  ✓  checking DESCRIPTION meta-information</span>
+<span class="co">#&gt;   ─  checking for LF line-endings in source and make files and shell scripts</span>
+<span class="co">#&gt;   ─  checking for empty or unneeded directories</span>
+<span class="co">#&gt;   ─  building ‘md.tools_0.1.0.tar.gz’</span>
+<span class="co">#&gt;      </span>
+<span class="co">#&gt; </span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://queelius.github.io/md.tools/">md.tools</a></span><span class="op">)</span></code></pre></div>
 </div>
@@ -92,19 +101,19 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_encode_matrix.html">md_encode_matrix</a></span><span class="op">(</span><span class="va">C</span>,<span class="st">"c"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 10 × 1</span>
-<span class="co">#&gt;    c1[,1] [,2]  [,3] </span>
-<span class="co">#&gt;    &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt;</span>
-<span class="co">#&gt;  1 FALSE  FALSE TRUE </span>
-<span class="co">#&gt;  2 FALSE  FALSE TRUE </span>
-<span class="co">#&gt;  3 FALSE  TRUE  FALSE</span>
-<span class="co">#&gt;  4 FALSE  FALSE FALSE</span>
-<span class="co">#&gt;  5 FALSE  TRUE  TRUE </span>
-<span class="co">#&gt;  6 TRUE   TRUE  TRUE </span>
-<span class="co">#&gt;  7 TRUE   TRUE  FALSE</span>
-<span class="co">#&gt;  8 TRUE   TRUE  TRUE </span>
-<span class="co">#&gt;  9 FALSE  TRUE  TRUE </span>
-<span class="co">#&gt; 10 TRUE   TRUE  FALSE</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 10 × 3</span>
+<span class="co">#&gt;    c1    c2    c3   </span>
+<span class="co">#&gt;    &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
+<span class="co">#&gt;  1 FALSE TRUE  FALSE</span>
+<span class="co">#&gt;  2 TRUE  FALSE FALSE</span>
+<span class="co">#&gt;  3 TRUE  TRUE  FALSE</span>
+<span class="co">#&gt;  4 FALSE FALSE TRUE </span>
+<span class="co">#&gt;  5 FALSE TRUE  FALSE</span>
+<span class="co">#&gt;  6 TRUE  FALSE TRUE </span>
+<span class="co">#&gt;  7 TRUE  FALSE FALSE</span>
+<span class="co">#&gt;  8 TRUE  TRUE  TRUE </span>
+<span class="co">#&gt;  9 FALSE TRUE  TRUE </span>
+<span class="co">#&gt; 10 FALSE TRUE  TRUE</span></code></pre></div>
 <p>We may also decode a matrix stored in a data frame with:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">C.decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_decode_matrix.html">md_decode_matrix</a></span><span class="op">(</span><span class="va">md</span>,<span class="st">"c"</span><span class="op">)</span>
@@ -117,19 +126,19 @@
 <span class="va">md</span><span class="op">$</span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#md &lt;- md_cand_contains(md)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 10 × 2</span>
-<span class="co">#&gt;    c1[,1] [,2]  [,3]      k</span>
-<span class="co">#&gt;    &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt;</span>
-<span class="co">#&gt;  1 FALSE  FALSE TRUE      2</span>
-<span class="co">#&gt;  2 FALSE  FALSE TRUE      1</span>
-<span class="co">#&gt;  3 FALSE  TRUE  FALSE     2</span>
-<span class="co">#&gt;  4 FALSE  FALSE FALSE     1</span>
-<span class="co">#&gt;  5 FALSE  TRUE  TRUE      1</span>
-<span class="co">#&gt;  6 TRUE   TRUE  TRUE      1</span>
-<span class="co">#&gt;  7 TRUE   TRUE  FALSE     3</span>
-<span class="co">#&gt;  8 TRUE   TRUE  TRUE      3</span>
-<span class="co">#&gt;  9 FALSE  TRUE  TRUE      2</span>
-<span class="co">#&gt; 10 TRUE   TRUE  FALSE     2</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 10 × 4</span>
+<span class="co">#&gt;    c1    c2    c3        k</span>
+<span class="co">#&gt;    &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt;</span>
+<span class="co">#&gt;  1 FALSE TRUE  FALSE     1</span>
+<span class="co">#&gt;  2 TRUE  FALSE FALSE     2</span>
+<span class="co">#&gt;  3 TRUE  TRUE  FALSE     1</span>
+<span class="co">#&gt;  4 FALSE FALSE TRUE      2</span>
+<span class="co">#&gt;  5 FALSE TRUE  FALSE     2</span>
+<span class="co">#&gt;  6 TRUE  FALSE TRUE      1</span>
+<span class="co">#&gt;  7 TRUE  FALSE FALSE     2</span>
+<span class="co">#&gt;  8 TRUE  TRUE  TRUE      2</span>
+<span class="co">#&gt;  9 FALSE TRUE  TRUE      3</span>
+<span class="co">#&gt; 10 FALSE TRUE  TRUE      1</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="metadata">Metadata<a class="anchor" aria-label="anchor" href="#metadata"></a>
