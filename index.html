@@ -69,41 +69,75 @@
 </h1></div>
 <!-- badges: start -->
 <!-- badges: end -->
-<p>A miscellaneous set of tools for working with masked data. The tool set takes inspiration from functional programming, with inputs and outputs defined over data frames instead of other kinds of objects or values. Relatedly, it is compatible with the <em>tidyverse</em> way of doing things, where we may compose together multiple simple functions through, say, the pipe operator to generate more complex transformations of data frames.</p>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
+<p>A miscellaneous set of tools for working with <em>masked data</em> and common features of masked data. The tool set takes inspiration from functional programming, with inputs and outputs defined over masked data frames of type <code>tbl_md</code> (or just data frames), making it consistent with the <em>tidyverse</em> way of doing things.</p>
+<p>We provide a set of simple functions on masked data frames, which may be used to compose more complicated functions, particularly when using the pipe operator <code>%&gt;%</code>.</p>
+<div class="section level4">
+<h4 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h4>
 <p>You can install the development version of <code>md.tools</code> from <a href="https://github.com/queelius/md.tools" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"queelius/md.tools"</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://queelius.github.io/md.tools/">md.tools</a></span><span class="op">)</span></code></pre></div>
-<p>A lot of space in <code>md.tools</code> is devoted to working with matrices encoded in the columns of data frames. We could directly store matrices in a column, or even general lists, but we prefer to work with columns defined over primitive types like <code>boolean</code>.</p>
-<p>So, suppose we have a <code>boolean</code> matrix <code>C</code> of size <code>10</code>-by-<code>3</code>:</p>
+</div>
+<div class="section level2">
+<h2 id="matrices">Matrices<a class="anchor" aria-label="anchor" href="#matrices"></a>
+</h2>
+<p>A lot of space in <code>md.tools</code> is devoted to working with matrices encoded in the columns of data frames. We could directly store matrices in a column, but we prefer to work with columns defined over primitive types like <code>boolean</code>.</p>
+<p>Consider the <code>boolean</code> matrix <code>C</code> of size <code>10</code>-by-<code>3</code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">C</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">T</span>,<span class="cn">F</span><span class="op">)</span>, size<span class="op">=</span><span class="fl">3</span><span class="op">*</span><span class="fl">10</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fl">10</span><span class="op">)</span></code></pre></div>
 <p>We may represent this in a data frame of <code>10</code> rows with the columns <code>c.1</code>, <code>c.2</code>, and <code>c.3</code> with:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu">md.tools</span><span class="fu">::</span><span class="fu">encode_matrix</span><span class="op">(</span><span class="va">C</span>,<span class="st">"c"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_encode_matrix.html">md_encode_matrix</a></span><span class="op">(</span><span class="va">C</span>,<span class="st">"c"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 10 × 1</span>
 <span class="co">#&gt;    c1[,1] [,2]  [,3] </span>
 <span class="co">#&gt;    &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt;</span>
-<span class="co">#&gt;  1 TRUE   TRUE  TRUE </span>
-<span class="co">#&gt;  2 FALSE  FALSE FALSE</span>
-<span class="co">#&gt;  3 FALSE  FALSE TRUE </span>
-<span class="co">#&gt;  4 TRUE   TRUE  FALSE</span>
-<span class="co">#&gt;  5 FALSE  FALSE TRUE </span>
-<span class="co">#&gt;  6 FALSE  TRUE  FALSE</span>
-<span class="co">#&gt;  7 TRUE   TRUE  TRUE </span>
-<span class="co">#&gt;  8 FALSE  TRUE  TRUE </span>
-<span class="co">#&gt;  9 TRUE   TRUE  FALSE</span>
-<span class="co">#&gt; 10 TRUE   FALSE FALSE</span></code></pre></div>
+<span class="co">#&gt;  1 FALSE  FALSE TRUE </span>
+<span class="co">#&gt;  2 FALSE  FALSE TRUE </span>
+<span class="co">#&gt;  3 FALSE  TRUE  FALSE</span>
+<span class="co">#&gt;  4 FALSE  FALSE FALSE</span>
+<span class="co">#&gt;  5 FALSE  TRUE  TRUE </span>
+<span class="co">#&gt;  6 TRUE   TRUE  TRUE </span>
+<span class="co">#&gt;  7 TRUE   TRUE  FALSE</span>
+<span class="co">#&gt;  8 TRUE   TRUE  TRUE </span>
+<span class="co">#&gt;  9 FALSE  TRUE  TRUE </span>
+<span class="co">#&gt; 10 TRUE   TRUE  FALSE</span></code></pre></div>
+<p>We may also decode a matrix stored in a data frame with:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">C.decoded</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_decode_matrix.html">md_decode_matrix</a></span><span class="op">(</span><span class="va">md</span>,<span class="st">"c"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">C</span> <span class="op">==</span> <span class="va">C.decoded</span><span class="op">)</span><span class="op">)</span>
+<span class="co">#&gt; [1] TRUE</span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">m</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">ncol</a></span><span class="op">(</span><span class="va">C</span><span class="op">)</span>
+<span class="va">n</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">C</span><span class="op">)</span>
+
+<span class="va">md</span><span class="op">$</span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#md &lt;- md_cand_contains(md)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 10 × 2</span>
+<span class="co">#&gt;    c1[,1] [,2]  [,3]      k</span>
+<span class="co">#&gt;    &lt;lgl&gt;  &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt;</span>
+<span class="co">#&gt;  1 FALSE  FALSE TRUE      2</span>
+<span class="co">#&gt;  2 FALSE  FALSE TRUE      1</span>
+<span class="co">#&gt;  3 FALSE  TRUE  FALSE     2</span>
+<span class="co">#&gt;  4 FALSE  FALSE FALSE     1</span>
+<span class="co">#&gt;  5 FALSE  TRUE  TRUE      1</span>
+<span class="co">#&gt;  6 TRUE   TRUE  TRUE      1</span>
+<span class="co">#&gt;  7 TRUE   TRUE  FALSE     3</span>
+<span class="co">#&gt;  8 TRUE   TRUE  TRUE      3</span>
+<span class="co">#&gt;  9 FALSE  TRUE  TRUE      2</span>
+<span class="co">#&gt; 10 TRUE   TRUE  FALSE     2</span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="metadata">Metadata<a class="anchor" aria-label="anchor" href="#metadata"></a>
+</h2>
 <p>We prefer to work with plaintext data files. To store data frames, we prefer to work with plaintext files like CSV files, where each row corresponds to some set of measurements of some experimental unit.</p>
 <p>However, we may also want to store <em>metadata</em> about the experiment that generated the data, or we may wish to store more information about the experimental units that does not naturally fit into the data frame model.</p>
 <p>To store metadata, we take the general approach of storing JSON (Javscript Object Notation) in the <em>comments</em> of the tabular data file (like CSV), where a comment by default is anything after the <code>#</code> character on a line.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu">md.tools</span><span class="fu">::</span><span class="fu"><a href="reference/md_read_csv_with_meta.html">md_read_csv_with_meta</a></span><span class="op">(</span><span class="st">"./raw-data/exp_series_data_1.csv"</span><span class="op">)</span>
 <span class="co">#&gt; Rows: 1000 Columns: 9</span>
 <span class="co">#&gt; ── Column specification ────────────────────────────────────────────────────────</span>
@@ -114,9 +148,10 @@
 <span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span>
 <span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
+<span class="co">#&gt; Latent variables:  k t.1 t.2 t.3 </span>
 <span class="co">#&gt; # A tibble: 1,000 × 9</span>
 <span class="co">#&gt;          s     k     w     t.1     t.2    t.3 c.1   c.2   c.3  </span>
-<span class="co">#&gt;  *   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
+<span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
 <span class="co">#&gt;  1 0.144       2     2 0.281   0.144   0.266  TRUE  TRUE  FALSE</span>
 <span class="co">#&gt;  2 0.0105      1     2 0.0105  0.0141  0.0633 TRUE  FALSE TRUE </span>
 <span class="co">#&gt;  3 0.0363      2     2 0.105   0.0363  0.545  TRUE  TRUE  FALSE</span>
