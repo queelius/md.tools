@@ -85,9 +85,9 @@ md_decode_boolean_matrix_as_list <- function(df,var)
 #' @export
 md_encode_matrix <- function(mat,var)
 {
-  t <- tibble::tibble(mat)
+  t <- tibble::as_tibble(mat,.name_repair="minimal",rownames=NULL)
   names(t) <- paste0(var,1:ncol(mat))
-  t
+  md(t)
 }
 
 #' Print method for masked data (\code{tbl_md}).
@@ -141,9 +141,9 @@ md <- function(x)
 #'
 #' @param md masked data frame
 #' @export
-md_cand_sizes <- function(md)
+md_cand_sizes <- function(md,var="x")
 {
-  x <- md_decode_matrix(md,"x.")
+  x <- md_decode_matrix(md,var)
   w <- tibble::as_tibble(apply(x,1,sum))
   colnames(w) <- c("w")
   md %>% dplyr::bind_cols(w)

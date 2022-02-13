@@ -56,18 +56,26 @@ C <- matrix(sample(c(T,F), size=3*10, replace=TRUE), nrow=10)
 We may represent this in a data frame of `10` rows with the columns `c.1`,
 `c.2`, and `c.3` with:
 ```{r}
-df <- md_encode_matrix(C,"c")
-print(df)
+md <- md_encode_matrix(C,"c")
+print(md)
 ```
 
-##
+We may also decode a matrix stored in a data frame with:
+```{r}
+C.decoded <- md_decode_matrix(md,"c")
+print(all(C == C.decoded))
+```
 
 ```{r}
-C.decoded <- md_decode_matrix(df,"c")
-print(C == C.decoded)
+m <- ncol(C)
+n <- nrow(C)
+
+md$k <- sample(1:m,n,replace=TRUE)
+#md <- md_cand_contains(md)
+print(md)
 ```
 
-## Meta-data
+## Metadata
 We prefer to work with plaintext data files.
 To store data frames, we prefer to work with plaintext files like CSV files,
 where each row corresponds to some set of measurements of some experimental
