@@ -24,6 +24,15 @@ You can install the development version of `md.tools` from
 ``` r
 # install.packages("devtools")
 devtools::install_github("queelius/md.tools")
+#> 
+#>      checking for file ‘/tmp/RtmpuZoRjX/remotes1cecf94219146e/queelius-md.tools-6a06123/DESCRIPTION’ ...  ✓  checking for file ‘/tmp/RtmpuZoRjX/remotes1cecf94219146e/queelius-md.tools-6a06123/DESCRIPTION’
+#>   ─  preparing ‘md.tools’:
+#>      checking DESCRIPTION meta-information ...  ✓  checking DESCRIPTION meta-information
+#>   ─  checking for LF line-endings in source and make files and shell scripts
+#>   ─  checking for empty or unneeded directories
+#>   ─  building ‘md.tools_0.1.0.tar.gz’
+#>      
+#> 
 library(tidyverse)
 library(md.tools)
 ```
@@ -52,20 +61,45 @@ print(md)
 #> # A tibble: 5 × 3
 #>   c1    c2    c3   
 #>   <lgl> <lgl> <lgl>
-#> 1 FALSE FALSE FALSE
-#> 2 FALSE FALSE TRUE 
-#> 3 FALSE TRUE  FALSE
-#> 4 FALSE FALSE TRUE 
+#> 1 FALSE TRUE  TRUE 
+#> 2 TRUE  FALSE TRUE 
+#> 3 TRUE  TRUE  FALSE
+#> 4 TRUE  TRUE  TRUE 
 #> 5 FALSE FALSE TRUE
 ```
 
 We may also decode a matrix stored in a data frame with:
 
 ``` r
-C.decoded <- md_decode_matrix(md,"c")
-print(all(C == C.decoded))
+print(all(C == md_decode_matrix(md,"c")))
 #> [1] TRUE
 ```
+
+We may want to work with a Boolean matrix as a list. The function
+`md_boolean_matrix_to_list` uses the following transformation:
+
+If we have a *n*-by-*m* Boolean matrix, then if the (*j*,*k*)-element is
+`TRUE`, the *j*-th vector in the list contains the integer *k*.
+
+For instance, suppose we wish to show `md` with a candidate set as a
+“set” of integers:
+
+``` r
+as.data.frame(md %>% dplyr::select(-starts_with("c")) %>%
+  mutate("candidates"=lapply(
+    md_boolean_matrix_to_list(C),
+    function(x) { paste0("{",toString(x),"}") })))
+#>   candidates
+#> 1     {2, 3}
+#> 2     {1, 3}
+#> 3     {1, 2}
+#> 4  {1, 2, 3}
+#> 5        {3}
+```
+
+For completion, we allow converting between these two representations.
+Thus, the inverse of `md_boolean_matrix_to_list` is just
+`md_list_to_boolean_matrix`.
 
 ## Decorators
 
@@ -85,11 +119,11 @@ print(md)
 #> # A tibble: 5 × 4
 #>   c1    c2    c3        k
 #>   <lgl> <lgl> <lgl> <int>
-#> 1 FALSE FALSE FALSE     3
-#> 2 FALSE FALSE TRUE      2
-#> 3 FALSE TRUE  FALSE     2
-#> 4 FALSE FALSE TRUE      2
-#> 5 FALSE FALSE TRUE      1
+#> 1 FALSE TRUE  TRUE      2
+#> 2 TRUE  FALSE TRUE      2
+#> 3 TRUE  TRUE  FALSE     3
+#> 4 TRUE  TRUE  TRUE      1
+#> 5 FALSE FALSE TRUE      3
 ```
 
 We may additionally have a candidate set encoded by the Boolean columns
@@ -104,11 +138,11 @@ print(md)
 #> # A tibble: 5 × 5
 #>   c1    c2    c3        k contains
 #>   <lgl> <lgl> <lgl> <int> <lgl>   
-#> 1 FALSE FALSE FALSE     1 FALSE   
-#> 2 FALSE FALSE TRUE      2 FALSE   
-#> 3 FALSE TRUE  FALSE     1 FALSE   
-#> 4 FALSE FALSE TRUE      3 TRUE    
-#> 5 FALSE FALSE TRUE      1 FALSE
+#> 1 FALSE TRUE  TRUE      2 TRUE    
+#> 2 TRUE  FALSE TRUE      1 TRUE    
+#> 3 TRUE  TRUE  FALSE     3 FALSE   
+#> 4 TRUE  TRUE  TRUE      1 TRUE    
+#> 5 FALSE FALSE TRUE      3 TRUE
 ```
 
 We see that there is a new column, `contains`, that tells us whether the
@@ -126,11 +160,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains     w
 #>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
-#> 1 FALSE FALSE FALSE     1 FALSE        0
-#> 2 FALSE FALSE TRUE      2 FALSE        1
-#> 3 FALSE TRUE  FALSE     1 FALSE        1
-#> 4 FALSE FALSE TRUE      3 TRUE         1
-#> 5 FALSE FALSE TRUE      1 FALSE        1
+#> 1 FALSE TRUE  TRUE      2 TRUE         2
+#> 2 TRUE  FALSE TRUE      1 TRUE         2
+#> 3 TRUE  TRUE  FALSE     3 FALSE        2
+#> 4 TRUE  TRUE  TRUE      1 TRUE         3
+#> 5 FALSE FALSE TRUE      3 TRUE         1
 ```
 
 We may *unmark* a column variable as latent with:
@@ -141,11 +175,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains     w
 #>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
-#> 1 FALSE FALSE FALSE     1 FALSE        0
-#> 2 FALSE FALSE TRUE      2 FALSE        1
-#> 3 FALSE TRUE  FALSE     1 FALSE        1
-#> 4 FALSE FALSE TRUE      3 TRUE         1
-#> 5 FALSE FALSE TRUE      1 FALSE        1
+#> 1 FALSE TRUE  TRUE      2 TRUE         2
+#> 2 TRUE  FALSE TRUE      1 TRUE         2
+#> 3 TRUE  TRUE  FALSE     3 FALSE        2
+#> 4 TRUE  TRUE  TRUE      1 TRUE         3
+#> 5 FALSE FALSE TRUE      3 TRUE         1
 ```
 
 The latent variable specification is metadata about the masked data
