@@ -4,10 +4,12 @@
 \alias{md_cand_contains}
 \title{Decorates masked data with whether candidate set contains failed component.}
 \usage{
-md_cand_contains(md)
+md_cand_contains(md, var = "x")
 }
 \arguments{
 \item{md}{masked data frame}
+
+\item{var}{column prefix for matrix encoding}
 }
 \description{
 Takes masked data frame \code{md} with candidate set encoded as \code{x}

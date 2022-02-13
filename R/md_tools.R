@@ -140,6 +140,7 @@ md <- function(x)
 #' just counts the number of times that a row element of \code{x} is \code{TRUE}.
 #'
 #' @param md masked data frame
+#' @param var column prefix for matrix encoding
 #' @export
 md_cand_sizes <- function(md,var="x")
 {
@@ -157,6 +158,7 @@ md_cand_sizes <- function(md,var="x")
 #' denotes whether the candidate set contains the component cause of failure.
 #'
 #' @param md masked data frame
+#' @param var column prefix for matrix encoding
 #' @export
 md_cand_contains <- function(md,var="x")
 {

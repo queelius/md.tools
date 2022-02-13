@@ -36,7 +36,7 @@ You can install the development version of `md.tools` from
 
 ```{r,message=F,warning=F}
 # install.packages("devtools")
-#devtools::install_github("queelius/md.tools")
+devtools::install_github("queelius/md.tools")
 library(tidyverse)
 library(md.tools)
 ```
@@ -50,10 +50,12 @@ defined over primitive types like `boolean`.
 
 Consider the `boolean` matrix `C` of size `10`-by-`3`:
 ```{r}
-C <- matrix(sample(c(T,F), size=3*10, replace=TRUE), nrow=10)
+n <- 5
+m <- 3
+C <- matrix(sample(c(T,F), size=m*n, replace=TRUE), nrow=n)
 ```
 
-We may represent this in a data frame of `10` rows with the columns `c.1`,
+We may represent this in a data frame of `r n` rows with the columns `c.1`,
 `c.2`, and `c.3` with:
 ```{r}
 md <- md_encode_matrix(C,"c")
@@ -66,20 +68,71 @@ C.decoded <- md_decode_matrix(md,"c")
 print(all(C == C.decoded))
 ```
 
-```{r}
-m <- ncol(C)
-n <- nrow(C)
+## Decorators
+We now consider some data frame transformations that adds
+additional columns with information that may be
+inferred from what is already in the data frame.
+For this reason, we have chosen to call them *decorators*.
 
-md$k <- sample(1:m,n,replace=TRUE)
-md <- md_cand_contains(md,"c")
+In a masked data frame, we may have a column `k` 
+that stores the failed component.
+We simulate failed components and mark them
+as *latent* with:
+```{r}
+md <- md %>% mutate(k=sample(1:m,n,replace=TRUE)) %>%
+  md_mark_latent("k")
 print(md)
 ```
 
+We may additionally have a candidate set encoded by
+the Boolean columns `c1`,...,`cm`, in which case
+we may infer whether the candidate set *contains*
+the failed component `k` with:
+
+```{r}
+md$k <- sample(1:m,n,replace=TRUE)
+md <- md %>% md_cand_contains("c")
+print(md)
+```
+
+We see that there is a new column, `contains`, that
+tells us whether the candidate set actually contains
+the failed component.
+No new information is given by this column, it only
+presents what information that is already there in
+a potentially more conventient format.
+
+Given the same data frame and candidate set, we may
+determine the *cardinality* of the candidate sets with:
+```{r}
+md <- md %>% md_cand_sizes("c")
+print(md)
+```
+
+We may *unmark* a column variable as latent with:
+```{r}
+md <- md %>% md.tools::md_unmark_latent("k")
+print(md)
+```
+
+The latent variable specification is metadata about
+the masked data frame, but it does not necessarily
+impose any requirements on algorithms applied to it.
+
+More generally, a masked data frame may have a lot
+more metadata about it, and we provide some tools
+for working with them.
+However, for the most part, you are expected to
+handle the metadata yourself.
+The metadata is stored in the *attributes*, and so
+underneath the hood, a masked data frame is just
+a data frame and may be treated as one.
+
 ## Metadata
-We prefer to work with plaintext data files.
-To store data frames, we prefer to work with plaintext files like CSV files,
-where each row corresponds to some set of measurements of some experimental
-unit.
+To read and write data frames for sharing with others,
+including yourself, we prefer to work with plaintext
+files like CSV files, where each row corresponds to
+some set of measurements of some experimental unit.
 
 However, we may also want to store *metadata* about the experiment that
 generated the data, or we may wish to store more information about the
@@ -90,6 +143,17 @@ Object Notation) in the *comments* of the tabular data file (like CSV), where
 a comment by default is anything after the `#` character on a line.
 
 ```{r}
-md <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
-print(md)
+data <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
+print(data)
 ```
+
+We may view all of the metadata stored in `data`, minus the `row.names`, with:
+```{r}
+attr(data,"row.names") <- NULL
+print(attributes(data))
+```
+
+A lot of the metadata for `data` has to do with how the data was generated.
+In particular, we see this data is the result of a simulation
+for a series system with 3 exponentially distributed nodes parameterized
+by $\lambda = (3,4,5)'$ and candidate model `md_cand_m1`.

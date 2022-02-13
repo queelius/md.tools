@@ -4,10 +4,12 @@
 \alias{md_cand_sizes}
 \title{Decorates masked data with candidate sizes}
 \usage{
-md_cand_sizes(md)
+md_cand_sizes(md, var = "x")
 }
 \arguments{
 \item{md}{masked data frame}
+
+\item{var}{column prefix for matrix encoding}
 }
 \description{
 Takes masked data frame \code{md} with candidate set encoded as \code{x}

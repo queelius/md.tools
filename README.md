@@ -24,15 +24,6 @@ You can install the development version of `md.tools` from
 ``` r
 # install.packages("devtools")
 devtools::install_github("queelius/md.tools")
-#> 
-#>      checking for file ‘/tmp/RtmpAE6R22/remotes1580b33da15d67/queelius-md.tools-61bfe53/DESCRIPTION’ ...  ✓  checking for file ‘/tmp/RtmpAE6R22/remotes1580b33da15d67/queelius-md.tools-61bfe53/DESCRIPTION’
-#>   ─  preparing ‘md.tools’:
-#>      checking DESCRIPTION meta-information ...  ✓  checking DESCRIPTION meta-information
-#>   ─  checking for LF line-endings in source and make files and shell scripts
-#>   ─  checking for empty or unneeded directories
-#>   ─  building ‘md.tools_0.1.0.tar.gz’
-#>      
-#> 
 library(tidyverse)
 library(md.tools)
 ```
@@ -47,28 +38,25 @@ like `boolean`.
 Consider the `boolean` matrix `C` of size `10`-by-`3`:
 
 ``` r
-C <- matrix(sample(c(T,F), size=3*10, replace=TRUE), nrow=10)
+n <- 5
+m <- 3
+C <- matrix(sample(c(T,F), size=m*n, replace=TRUE), nrow=n)
 ```
 
-We may represent this in a data frame of `10` rows with the columns
-`c.1`, `c.2`, and `c.3` with:
+We may represent this in a data frame of 5 rows with the columns `c.1`,
+`c.2`, and `c.3` with:
 
 ``` r
 md <- md_encode_matrix(C,"c")
 print(md)
-#> # A tibble: 10 × 3
-#>    c1    c2    c3   
-#>    <lgl> <lgl> <lgl>
-#>  1 FALSE TRUE  FALSE
-#>  2 TRUE  FALSE FALSE
-#>  3 TRUE  TRUE  FALSE
-#>  4 FALSE FALSE TRUE 
-#>  5 FALSE TRUE  FALSE
-#>  6 TRUE  FALSE TRUE 
-#>  7 TRUE  FALSE FALSE
-#>  8 TRUE  TRUE  TRUE 
-#>  9 FALSE TRUE  TRUE 
-#> 10 FALSE TRUE  TRUE
+#> # A tibble: 5 × 3
+#>   c1    c2    c3   
+#>   <lgl> <lgl> <lgl>
+#> 1 FALSE FALSE FALSE
+#> 2 FALSE FALSE TRUE 
+#> 3 FALSE TRUE  FALSE
+#> 4 FALSE FALSE TRUE 
+#> 5 FALSE FALSE TRUE
 ```
 
 We may also decode a matrix stored in a data frame with:
@@ -79,33 +67,103 @@ print(all(C == C.decoded))
 #> [1] TRUE
 ```
 
-``` r
-m <- ncol(C)
-n <- nrow(C)
+## Decorators
 
-md$k <- sample(1:m,n,replace=TRUE)
-#md <- md_cand_contains(md)
+We now consider some data frame transformations that adds additional
+columns with information that may be inferred from what is already in
+the data frame. For this reason, we have chosen to call them
+*decorators*.
+
+In a masked data frame, we may have a column `k` that stores the failed
+component. We simulate failed components and mark them as *latent* with:
+
+``` r
+md <- md %>% mutate(k=sample(1:m,n,replace=TRUE)) %>%
+  md_mark_latent("k")
 print(md)
-#> # A tibble: 10 × 4
-#>    c1    c2    c3        k
-#>    <lgl> <lgl> <lgl> <int>
-#>  1 FALSE TRUE  FALSE     1
-#>  2 TRUE  FALSE FALSE     2
-#>  3 TRUE  TRUE  FALSE     1
-#>  4 FALSE FALSE TRUE      2
-#>  5 FALSE TRUE  FALSE     2
-#>  6 TRUE  FALSE TRUE      1
-#>  7 TRUE  FALSE FALSE     2
-#>  8 TRUE  TRUE  TRUE      2
-#>  9 FALSE TRUE  TRUE      3
-#> 10 FALSE TRUE  TRUE      1
+#> Latent variables:  k 
+#> # A tibble: 5 × 4
+#>   c1    c2    c3        k
+#>   <lgl> <lgl> <lgl> <int>
+#> 1 FALSE FALSE FALSE     3
+#> 2 FALSE FALSE TRUE      2
+#> 3 FALSE TRUE  FALSE     2
+#> 4 FALSE FALSE TRUE      2
+#> 5 FALSE FALSE TRUE      1
 ```
+
+We may additionally have a candidate set encoded by the Boolean columns
+`c1`,…,`cm`, in which case we may infer whether the candidate set
+*contains* the failed component `k` with:
+
+``` r
+md$k <- sample(1:m,n,replace=TRUE)
+md <- md %>% md_cand_contains("c")
+print(md)
+#> Latent variables:  k 
+#> # A tibble: 5 × 5
+#>   c1    c2    c3        k contains
+#>   <lgl> <lgl> <lgl> <int> <lgl>   
+#> 1 FALSE FALSE FALSE     1 FALSE   
+#> 2 FALSE FALSE TRUE      2 FALSE   
+#> 3 FALSE TRUE  FALSE     1 FALSE   
+#> 4 FALSE FALSE TRUE      3 TRUE    
+#> 5 FALSE FALSE TRUE      1 FALSE
+```
+
+We see that there is a new column, `contains`, that tells us whether the
+candidate set actually contains the failed component. No new information
+is given by this column, it only presents what information that is
+already there in a potentially more conventient format.
+
+Given the same data frame and candidate set, we may determine the
+*cardinality* of the candidate sets with:
+
+``` r
+md <- md %>% md_cand_sizes("c")
+print(md)
+#> Latent variables:  k 
+#> # A tibble: 5 × 6
+#>   c1    c2    c3        k contains     w
+#>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
+#> 1 FALSE FALSE FALSE     1 FALSE        0
+#> 2 FALSE FALSE TRUE      2 FALSE        1
+#> 3 FALSE TRUE  FALSE     1 FALSE        1
+#> 4 FALSE FALSE TRUE      3 TRUE         1
+#> 5 FALSE FALSE TRUE      1 FALSE        1
+```
+
+We may *unmark* a column variable as latent with:
+
+``` r
+md <- md %>% md.tools::md_unmark_latent("k")
+print(md)
+#> # A tibble: 5 × 6
+#>   c1    c2    c3        k contains     w
+#>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
+#> 1 FALSE FALSE FALSE     1 FALSE        0
+#> 2 FALSE FALSE TRUE      2 FALSE        1
+#> 3 FALSE TRUE  FALSE     1 FALSE        1
+#> 4 FALSE FALSE TRUE      3 TRUE         1
+#> 5 FALSE FALSE TRUE      1 FALSE        1
+```
+
+The latent variable specification is metadata about the masked data
+frame, but it does not necessarily impose any requirements on algorithms
+applied to it.
+
+More generally, a masked data frame may have a lot more metadata about
+it, and we provide some tools for working with them. However, for the
+most part, you are expected to handle the metadata yourself. The
+metadata is stored in the *attributes*, and so underneath the hood, a
+masked data frame is just a data frame and may be treated as one.
 
 ## Metadata
 
-We prefer to work with plaintext data files. To store data frames, we
-prefer to work with plaintext files like CSV files, where each row
-corresponds to some set of measurements of some experimental unit.
+To read and write data frames for sharing with others, including
+yourself, we prefer to work with plaintext files like CSV files, where
+each row corresponds to some set of measurements of some experimental
+unit.
 
 However, we may also want to store *metadata* about the experiment that
 generated the data, or we may wish to store more information about the
@@ -118,7 +176,7 @@ To store metadata, we take the general approach of storing JSON
 character on a line.
 
 ``` r
-md <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
+data <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
 #> Rows: 1000 Columns: 9
 #> ── Column specification ────────────────────────────────────────────────────────
 #> Delimiter: ","
@@ -127,7 +185,7 @@ md <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
 #> 
 #> ℹ Use `spec()` to retrieve the full column specification for this data.
 #> ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
-print(md)
+print(data)
 #> Latent variables:  k t.1 t.2 t.3 
 #> # A tibble: 1,000 × 9
 #>          s     k     w     t.1     t.2    t.3 c.1   c.2   c.3  
@@ -144,3 +202,54 @@ print(md)
 #> 10 0.00794     2     2 0.524   0.00794 0.120  FALSE TRUE  TRUE 
 #> # … with 990 more rows
 ```
+
+We may view all of the metadata stored in `data`, minus the `row.names`,
+with:
+
+``` r
+attr(data,"row.names") <- NULL
+print(attributes(data))
+#> $class
+#> [1] "tbl_md"     "tbl_df"     "tbl"        "data.frame"
+#> 
+#> $names
+#> [1] "s"   "k"   "w"   "t.1" "t.2" "t.3" "c.1" "c.2" "c.3"
+#> 
+#> $comment
+#> [1] "this is a simulation test."
+#> 
+#> $family
+#> [1] "masked.data::md_exp_series"
+#> 
+#> $index
+#> [1] 3 4 5
+#> 
+#> $nodes
+#>        family index
+#> 1 exponential     3
+#> 2 exponential     4
+#> 3 exponential     5
+#> 
+#> $candidate_model
+#> [1] "md_cand_m1"
+#> 
+#> $call
+#> [1] "masked.data::md_exp_series(n=1000,rate=c(3,4,5),cand_model=masked.data::md_cand_m1(alpha=rep(1,1000),w=rep(2,1000)))"
+#> 
+#> $latent
+#> [1] "k"   "t.1" "t.2" "t.3"
+#> 
+#> $observable
+#> [1] "s"   "w"   "c.1" "c.2" "c.3"
+#> 
+#> $num_comp
+#> [1] 3
+#> 
+#> $sample_size
+#> [1] 1000
+```
+
+A lot of the metadata for `data` has to do with how the data was
+generated. In particular, we see this data is the result of a simulation
+for a series system with 3 exponentially distributed nodes parameterized
+by *λ* = (3,4,5)′ and candidate model `md_cand_m1`.
