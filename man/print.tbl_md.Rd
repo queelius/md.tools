@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{masked data to print}
 
-\item{drop_latent}{Boolean, drop the latent random variables}
+\item{drop_latent}{If TRUE, drop the latent random variables}
 
 \item{...}{additional arguments to pass}
 }

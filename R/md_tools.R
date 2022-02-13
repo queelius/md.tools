@@ -1,78 +1,3 @@
-#' Write data frame object to a CSV (comma separated file), optionally
-#' with associated attribute data (stored as JSON in comments)
-#'
-#' @param df a data frame with attributes to write
-#' @param file filename for csv
-#' @param comment denotes a comment block
-#'
-#' @export
-md_write_csv_with_meta <- function(df, file, comment="#")
-{
-  tmp <- tempfile()
-  md_write_as_json(tmp,attributes(df),comment)
-  readr::write_lines(paste0("# ",readLines(tmp)),file)
-  readr::write_csv(df,file,append=T,col_names = T)
-}
-
-#' helper function
-#'
-#' @param file connection
-#' @param ls object (typically list) to write as json
-#'
-#' TODO: recursively search x and only write those values that can be
-#'       serialized and deserialized by jsonlite.
-md_write_as_json <- function(file,ls)
-{
-  x[["names"]] <- NULL
-  x[["row.names"]] <- NULL
-  x[["problems"]] <- NULL
-  x[["spec"]] <- NULL
-
-  jsonlite::write_json(x,file,simplifyVector=T,pretty=T)
-}
-
-# helper function
-md_read_json <- function(file,prefix="",max_lines=-1L)
-{
-  pat <- paste0("^\\s*",prefix)
-  lns <- grep(pat,readLines(file,n=max_lines),value=T)
-
-  parse <- NULL
-  pat <- paste0(pat,"(.*)")
-  for (ln in lns)
-    parse <- paste0(parse,gsub(pat,"\\1",ln))
-
-  jsonlite::parse_json(parse,simplifyVector=T)
-}
-
-
-#' Read a data frame table from a connection (e.g., url or filename).
-#'
-#' @param file a path to a file, a connection, or literal data
-#' @param read_meta whether to read in metadata to populate attributes
-#' @param comment comment indicator, defaults to "#'
-#' @param max_meta_lns limit metadata search to the indicated number of lines
-#' @param skip a number indicating how many of the first lines to skip
-#'
-#' @export
-md_read_csv_with_meta <- function(file,read_meta=T,comment="#",
-                                  max_meta_lns=1000,skip=0)
-{
-  metadata <- NULL
-  if (read_meta)
-    metadata <- md_read_json(file,comment,max_meta_lns)
-
-  df <- NULL
-  if (is.null(metadata) && is.null(metadata$col_types))
-    df <- readr::read_csv(file,comment=comment,skip=skip)
-  else
-    df <- readr::read_csv(file,comment=comment,skip=skip,
-                          col_types=metadata$col_types)
-
-  attributes(df) <- c(attributes(df),metadata)
-  df
-}
-
 #' Obtain a list of latent variables from masked data.
 #'
 #' @param md masked data to retrieve latent variables from.
@@ -104,10 +29,10 @@ md_unmark_latent <- function(md, vars)
   md
 }
 
-#' Obtains a matrix from specified columns in a data frame.
+#' Decodes a matrix from specified columns in a data frame.
 #'
 #' An \code{nrow(df)}-by-\code{p} matrix \code{var} is encoded in
-#' data fame \code{df} as the columns \code{var.1},...,\code{var.p} or
+#' data frame \code{df} with the columns \code{var.1},...,\code{var.p} or
 #' \code{var1},...,\code{varp}.
 #'
 #' A matrix will be returned with the appropriate ordering denoted by the
@@ -119,7 +44,7 @@ md_unmark_latent <- function(md, vars)
 #' @param var the symbolic name of the matrix
 #' @return a matrix
 #' @export
-matrix_from <- function(df,var)
+md_decode_matrix <- function(df,var)
 {
   int_pat <- "[[:digit:]]+"
   pat <- paste0(var,"\\.?(",int_pat,")")
@@ -131,30 +56,25 @@ matrix_from <- function(df,var)
   as.matrix(df[cols][,order(rank)])
 }
 
-#' Map boolean matrix defined by \code{var}, as described in
-#' \code{matrix_from}, to a list of vector of integers.
+#' Map Boolean matrix encoded by \code{var}, as described in
+#' \code{md_decode_matrix} and \code{md_encode_matrix}, to a list of vector of
+#' integers.
 #'
-#' @param df masked data
-#' @param var symbolic variable used to represent the matrix
-#' @param name column name of matrix strings
+#' @param df data frame
+#' @param var symbolic variable used to represent Boolean matrix in \code{df}
 #' @export
-boolean_matrix_to_integer_list <- function(df,var,name=NULL)
+md_decode_boolean_matrix_as_list <- function(df,var)
 {
-  if (is.null(name))
-    name <- var
+  xs <- list()
+  A <- md_decode_matrix(df,var)
+  if (is.na(A))
+    return(xs)
 
-  stopifnot(!(name %in% colnames(df)))
-  A <- matrix_from(df,var)
-  stopifnot(!is.na(A))
-
+  n <- nrow(A)
   m <- ncol(A)
-  ints <- list()
-  for (i in 1:nrow(df))
-  {
-    ints[[i]] <- (1:m)[A[i,]]
-  }
-  df[name] <- list(ints)
-  df
+  for (i in 1:n)
+    xs[[i]] <- (1:m)(A[i,])
+  xs
 }
 
 #' Encodes a matrix as a data frame with specified columns.
@@ -163,7 +83,7 @@ boolean_matrix_to_integer_list <- function(df,var,name=NULL)
 #' @param var the symbolic name of the matrix (prefix of column names)
 #' @return a tibble (data frame) encoding of a matrix
 #' @export
-encode_matrix <- function(mat,var)
+md_encode_matrix <- function(mat,var)
 {
   t <- tibble::tibble(mat)
   names(t) <- paste0(var,1:ncol(mat))
@@ -173,7 +93,7 @@ encode_matrix <- function(mat,var)
 #' Print method for masked data (\code{tbl_md}).
 #'
 #' @param x masked data to print
-#' @param drop_latent Boolean, drop the latent random variables
+#' @param drop_latent If TRUE, drop the latent random variables
 #' @param ... additional arguments to pass
 #' @importFrom dplyr %>%
 #' @export
@@ -181,8 +101,6 @@ print.tbl_md <- function(x,drop_latent=F,...)
 {
   if (!purrr::is_empty(md_latent(x)))
     cat("Latent variables: ", md_latent(x), "\n")
-
-  cat(attributes(x))
 
   if (drop_latent)
     x <- x %>% dplyr::select(-intersect(md_latent(x),colnames(x)))
@@ -212,4 +130,47 @@ md <- function(x)
   x <- tibble::as_tibble(x)
   class(x) <- unique(c("tbl_md",class(x)))
   x
+}
+
+#' Decorates masked data with candidate sizes
+#'
+#' Takes masked data frame \code{md} with candidate set encoded as \code{x}
+#' and returns a decorated masked data frame with a column \code{w} that
+#' denotes the size of the candidate sets. No new information is added, it
+#' just counts the number of times that a row element of \code{x} is \code{TRUE}.
+#'
+#' @param md masked data frame
+#' @export
+md_cand_sizes <- function(md)
+{
+  x <- md_decode_matrix(md,"x.")
+  w <- tibble::as_tibble(apply(x,1,sum))
+  colnames(w) <- c("w")
+  md %>% dplyr::bind_cols(w)
+}
+
+#' Decorates masked data with whether candidate set contains failed component.
+#'
+#' Takes masked data frame \code{md} with candidate set encoded as \code{x}
+#' and a column \code{k} denoting component cause of failure and returns a
+#' decorated masked data frame with a column \code{contains} that
+#' denotes whether the candidate set contains the component cause of failure.
+#'
+#' @param md masked data frame
+#' @export
+md_cand_contains <- function(md)
+{
+  stopifnot(!is.null(md$k))
+  x <- md_decode_matrix(md,"x.")
+  stopifnot(!is.na(x))
+  n <- nrow(x)
+  m <- ncol(x)
+
+  md$contains <- rep(F,n)
+  for (i in 1:n)
+  {
+    k <- md$k[i]
+    md$contains[i] <- x[i,k]
+  }
+  md
 }

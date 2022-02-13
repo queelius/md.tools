@@ -13,52 +13,75 @@ knitr::opts_chunk$set(
 )
 ```
 
-# R package: `md.tools`
+R package: `md.tools`
+=====================
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-Masked data tools.
+A miscellaneous set of tools for working with *masked data* and common
+features of masked data.
+The tool set takes inspiration from functional programming, with inputs and
+outputs defined over masked data frames of type `tbl_md` (or just data frames),
+making it consistent with the *tidyverse* way of doing things.
 
-## Installation
+We provide a set of simple functions on masked data frames, which
+may be used to compose more complicated functions, particularly when using
+the pipe operator `%>%`.
 
-You can install the development version of `md.tools` from [GitHub](https://github.com/) with:
+#### Installation
 
-```{r}
+You can install the development version of `md.tools` from
+[GitHub](https://github.com/queelius/md.tools) with:
+
+```{r,message=F,warning=F}
 # install.packages("devtools")
 devtools::install_github("queelius/md.tools")
 library(tidyverse)
 library(md.tools)
 ```
 
-## Example
+## Matrices
 
-We demonstrate the use of `md.tools` with a simple data set:
-```{r test1}
-knitr::kable(head(exp_series_data_1))
+A lot of space in `md.tools` is devoted to working with matrices encoded in
+the columns of data frames.
+We could directly store matrices in a column, but we prefer to work with columns
+defined over primitive types like `boolean`.
+
+Consider the `boolean` matrix `C` of size `10`-by-`3`:
+```{r}
+C <- matrix(sample(c(T,F), size=3*10, replace=TRUE), nrow=10)
 ```
 
+We may represent this in a data frame of `10` rows with the columns `c.1`,
+`c.2`, and `c.3` with:
 ```{r}
-df <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
-#usethis::use_data(exp_series_data_1, overwrite = TRUE)
+df <- md_encode_matrix(C,"c")
+print(df)
 ```
 
+##
+
 ```{r}
-md.tools::boolean_matrix_to_integer_list(df,"c")
-md.tools::is_md(df)
-head(md.tools::matrix_from(df,"c"))
-head(md.tools::matrix_from(df,"t"))
-md.tools::md_latent(df)
-df <- md.tools::md_unmark_latent(df,"t.1")
-md.tools::md_latent(df)
-df <- md.tools::md_mark_latent(df,"k")
-md.tools::md_latent(df)
-df <- md.tools::md_unmark_latent(df,"k")
-md.tools::md_latent(df)
-df <- md.tools::md_mark_latent(df,"aabk")
-md.tools::md_latent(df)
-df <- md.tools::md_unmark_latent(df,"aabk")
-md.tools::md_latent(df)
-df <- md.tools::md_unmark_latent(df,"aabkasdfads")
-md.tools::md_latent(df)
+C.decoded <- md_decode_matrix(df,"c")
+print(C == C.decoded)
+```
+
+## Meta-data
+We prefer to work with plaintext data files.
+To store data frames, we prefer to work with plaintext files like CSV files,
+where each row corresponds to some set of measurements of some experimental
+unit.
+
+However, we may also want to store *metadata* about the experiment that
+generated the data, or we may wish to store more information about the
+experimental units that does not naturally fit into the data frame model.
+
+To store metadata, we take the general approach of storing JSON (Javscript
+Object Notation) in the *comments* of the tabular data file (like CSV), where
+a comment by default is anything after the `#` character on a line.
+
+```{r}
+md <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
+print(md)
 ```
