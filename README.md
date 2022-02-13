@@ -24,6 +24,15 @@ You can install the development version of `md.tools` from
 ``` r
 # install.packages("devtools")
 devtools::install_github("queelius/md.tools")
+#> 
+#>      checking for file ‘/tmp/RtmpAE6R22/remotes1580b33da15d67/queelius-md.tools-61bfe53/DESCRIPTION’ ...  ✓  checking for file ‘/tmp/RtmpAE6R22/remotes1580b33da15d67/queelius-md.tools-61bfe53/DESCRIPTION’
+#>   ─  preparing ‘md.tools’:
+#>      checking DESCRIPTION meta-information ...  ✓  checking DESCRIPTION meta-information
+#>   ─  checking for LF line-endings in source and make files and shell scripts
+#>   ─  checking for empty or unneeded directories
+#>   ─  building ‘md.tools_0.1.0.tar.gz’
+#>      
+#> 
 library(tidyverse)
 library(md.tools)
 ```
@@ -47,19 +56,19 @@ We may represent this in a data frame of `10` rows with the columns
 ``` r
 md <- md_encode_matrix(C,"c")
 print(md)
-#> # A tibble: 10 × 1
-#>    c1[,1] [,2]  [,3] 
-#>    <lgl>  <lgl> <lgl>
-#>  1 FALSE  FALSE TRUE 
-#>  2 FALSE  FALSE TRUE 
-#>  3 FALSE  TRUE  FALSE
-#>  4 FALSE  FALSE FALSE
-#>  5 FALSE  TRUE  TRUE 
-#>  6 TRUE   TRUE  TRUE 
-#>  7 TRUE   TRUE  FALSE
-#>  8 TRUE   TRUE  TRUE 
-#>  9 FALSE  TRUE  TRUE 
-#> 10 TRUE   TRUE  FALSE
+#> # A tibble: 10 × 3
+#>    c1    c2    c3   
+#>    <lgl> <lgl> <lgl>
+#>  1 FALSE TRUE  FALSE
+#>  2 TRUE  FALSE FALSE
+#>  3 TRUE  TRUE  FALSE
+#>  4 FALSE FALSE TRUE 
+#>  5 FALSE TRUE  FALSE
+#>  6 TRUE  FALSE TRUE 
+#>  7 TRUE  FALSE FALSE
+#>  8 TRUE  TRUE  TRUE 
+#>  9 FALSE TRUE  TRUE 
+#> 10 FALSE TRUE  TRUE
 ```
 
 We may also decode a matrix stored in a data frame with:
@@ -77,19 +86,19 @@ n <- nrow(C)
 md$k <- sample(1:m,n,replace=TRUE)
 #md <- md_cand_contains(md)
 print(md)
-#> # A tibble: 10 × 2
-#>    c1[,1] [,2]  [,3]      k
-#>    <lgl>  <lgl> <lgl> <int>
-#>  1 FALSE  FALSE TRUE      2
-#>  2 FALSE  FALSE TRUE      1
-#>  3 FALSE  TRUE  FALSE     2
-#>  4 FALSE  FALSE FALSE     1
-#>  5 FALSE  TRUE  TRUE      1
-#>  6 TRUE   TRUE  TRUE      1
-#>  7 TRUE   TRUE  FALSE     3
-#>  8 TRUE   TRUE  TRUE      3
-#>  9 FALSE  TRUE  TRUE      2
-#> 10 TRUE   TRUE  FALSE     2
+#> # A tibble: 10 × 4
+#>    c1    c2    c3        k
+#>    <lgl> <lgl> <lgl> <int>
+#>  1 FALSE TRUE  FALSE     1
+#>  2 TRUE  FALSE FALSE     2
+#>  3 TRUE  TRUE  FALSE     1
+#>  4 FALSE FALSE TRUE      2
+#>  5 FALSE TRUE  FALSE     2
+#>  6 TRUE  FALSE TRUE      1
+#>  7 TRUE  FALSE FALSE     2
+#>  8 TRUE  TRUE  TRUE      2
+#>  9 FALSE TRUE  TRUE      3
+#> 10 FALSE TRUE  TRUE      1
 ```
 
 ## Metadata

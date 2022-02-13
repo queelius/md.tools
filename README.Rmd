@@ -36,7 +36,7 @@ You can install the development version of `md.tools` from
 
 ```{r,message=F,warning=F}
 # install.packages("devtools")
-devtools::install_github("queelius/md.tools")
+#devtools::install_github("queelius/md.tools")
 library(tidyverse)
 library(md.tools)
 ```
@@ -71,7 +71,7 @@ m <- ncol(C)
 n <- nrow(C)
 
 md$k <- sample(1:m,n,replace=TRUE)
-#md <- md_cand_contains(md)
+md <- md_cand_contains(md,"c")
 print(md)
 ```
 

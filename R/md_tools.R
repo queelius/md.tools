@@ -158,10 +158,10 @@ md_cand_sizes <- function(md,var="x")
 #'
 #' @param md masked data frame
 #' @export
-md_cand_contains <- function(md)
+md_cand_contains <- function(md,var="x")
 {
   stopifnot(!is.null(md$k))
-  x <- md_decode_matrix(md,"x.")
+  x <- md_decode_matrix(md,var)
   stopifnot(!is.na(x))
   n <- nrow(x)
   m <- ncol(x)
