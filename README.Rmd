@@ -68,6 +68,28 @@ C.decoded <- md_decode_matrix(md,"c")
 print(all(C == C.decoded))
 ```
 
+We may want to work with a Boolean matrix as a list.
+The function `md_boolean_matrix_to_list` uses the following transformation:
+
+  If we have a $n$-by-$m$ Boolean matrix, then if
+  the $(j,k)$-element is `TRUE`, the $j$-th vector in the
+  list contains the integer $k$.
+
+For instance, suppose we wish to show `md` with a candidate set
+as a "set" of integers:
+```{r}
+md$C <- unlist(lapply(md_boolean_matrix_to_list(C),toString))
+md <- md %>% dplyr::select(-starts_with("c"))
+print(md)
+```
+
+For completion, we allow converting between these two representations.
+Thus, the inverse of `md_boolean_matrix_to_list` is just
+`md_list_to_boolean_matrix`:
+```{r}
+print(all(C==md_list_to_boolean_matrix(C.list)))
+```
+
 ## Decorators
 We now consider some data frame transformations that adds
 additional columns with information that may be

@@ -49,32 +49,41 @@ md_decode_matrix <- function(df,var)
   int_pat <- "[[:digit:]]+"
   pat <- paste0(var,"\\.?(",int_pat,")")
   cols <- colnames(df)[grepl(pat,colnames(df),ignore.case=F)]
-  if (purrr::is_empty(cols) == 0)
-    NA
+  if (purrr::is_empty(cols))
+    return(NULL)
 
   rank <- as.integer(stringr::str_replace(cols,pat,"\\1"))
   as.matrix(df[cols][,order(rank)])
 }
 
-#' Map Boolean matrix encoded by \code{var}, as described in
-#' \code{md_decode_matrix} and \code{md_encode_matrix}, to a list of vector of
-#' integers.
+#' Map Boolean matrix \code{mat} to a list of integer vectors.
 #'
-#' @param df data frame
-#' @param var symbolic variable used to represent Boolean matrix in \code{df}
+#' @param mat Boolean matrix
 #' @export
-md_decode_boolean_matrix_as_list <- function(df,var)
+md_boolean_matrix_to_list <- function(mat)
 {
   xs <- list()
-  A <- md_decode_matrix(df,var)
-  if (is.na(A))
-    return(xs)
-
-  n <- nrow(A)
-  m <- ncol(A)
-  for (i in 1:n)
-    xs[[i]] <- (1:m)(A[i,])
+  for (i in seq_len(nrow(mat)))
+    xs[[i]] <- ((1:ncol(mat))[mat[i,]])
   xs
+}
+
+#' Map list of integer vectors to Boolean matrix.
+#'
+#' @param xs List of integer vectors.
+#' @export
+md_list_to_boolean_matrix <- function(xs)
+{
+  n = length(xs)
+  m <- max(unlist(
+    lapply(xs,function(xs) { ifelse(length(xs)==0,0,max(xs)) })))
+  mat <- matrix(nrow=n,ncol=m)
+  for (i in seq_len(n))
+  {
+    for (j in seq_len(m))
+      mat[i,j] <- !is.na(match(j,xs[[i]]))
+  }
+  mat
 }
 
 #' Encodes a matrix as a data frame with specified columns.
