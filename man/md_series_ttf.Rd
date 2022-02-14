@@ -13,7 +13,7 @@ md_series_ttf(md, tau = NULL, var = "t")
 
 \item{tau}{suspension time}
 
-\item{var}{component ttf symbolic variable, defaults to \code{t}}
+\item{var}{component symbolic variable, defaults to \code{t}}
 }
 \description{
 Generates time-to-failure (ttf) and component cause of failure for a series

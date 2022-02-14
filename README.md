@@ -24,15 +24,11 @@ You can install the development version of `md.tools` from
 ``` r
 # install.packages("devtools")
 devtools::install_github("queelius/md.tools")
-#> 
-#>      checking for file ‘/tmp/Rtmp5HKqAO/remotes1e9b383d6a7192/queelius-md.tools-e37f96a/DESCRIPTION’ ...  ✓  checking for file ‘/tmp/Rtmp5HKqAO/remotes1e9b383d6a7192/queelius-md.tools-e37f96a/DESCRIPTION’
-#>   ─  preparing ‘md.tools’:
-#>      checking DESCRIPTION meta-information ...  ✓  checking DESCRIPTION meta-information
-#>   ─  checking for LF line-endings in source and make files and shell scripts
-#>   ─  checking for empty or unneeded directories
-#>   ─  building ‘md.tools_0.1.0.tar.gz’
-#>      
-#> 
+```
+
+We load the libraries `md.tools` and `tidyverse` with:
+
+``` r
 library(tidyverse)
 library(md.tools)
 ```
@@ -61,11 +57,11 @@ print(md)
 #> # A tibble: 5 × 3
 #>   c1    c2    c3   
 #>   <lgl> <lgl> <lgl>
-#> 1 TRUE  TRUE  FALSE
-#> 2 FALSE TRUE  FALSE
-#> 3 FALSE TRUE  FALSE
-#> 4 FALSE TRUE  FALSE
-#> 5 TRUE  TRUE  FALSE
+#> 1 FALSE TRUE  FALSE
+#> 2 TRUE  TRUE  FALSE
+#> 3 TRUE  TRUE  FALSE
+#> 4 FALSE FALSE FALSE
+#> 5 FALSE TRUE  FALSE
 ```
 
 We may also decode a matrix stored in a data frame with:
@@ -90,16 +86,114 @@ as.data.frame(md %>% dplyr::select(-starts_with("c")) %>%
     md_boolean_matrix_to_list(C),
     function(x) { paste0("{",toString(x),"}") })))
 #>   candidates
-#> 1     {1, 2}
-#> 2        {2}
-#> 3        {2}
-#> 4        {2}
-#> 5     {1, 2}
+#> 1        {2}
+#> 2     {1, 2}
+#> 3     {1, 2}
+#> 4         {}
+#> 5        {2}
 ```
 
 For completion, we allow converting between these two representations.
 Thus, the inverse of `md_boolean_matrix_to_list` is just
 `md_list_to_boolean_matrix`.
+
+## System structure functions
+
+An important aspect to masked data is the type of lifetime data being
+modeled. In general, we define lifetime data as coming from some
+times-to-failure for a system consisting of the components. This system
+is described by a structure function, *ϕ*. We provide structure
+functions for series, parallel, and *k*-out-of-*n* (koon).
+
+We generate a sample of size *n* = 5 of *m* = 3 component
+times-to-failure with:
+
+``` r
+n <- 5
+m <- 3
+t <- tibble::as_tibble(matrix(rexp(n*m),ncol=m))
+#> Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
+#> Using compatibility `.name_repair`.
+#> This warning is displayed once every 8 hours.
+#> Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+names(t) <- paste0("t",1:m)
+print(t)
+#> # A tibble: 5 × 3
+#>      t1     t2    t3
+#>   <dbl>  <dbl> <dbl>
+#> 1 0.542 0.346  0.140
+#> 2 0.708 1.08   0.481
+#> 3 0.199 0.469  0.313
+#> 4 0.449 0.560  0.277
+#> 5 0.242 0.0393 3.40
+```
+
+Given a right-censoring time of *τ* = .35, a series system is generated
+from these component times-to-failure with:
+
+``` r
+tau = .35
+md.ser <- t %>% md.tools::md_series_ttf(rep(tau,n))
+print(md.ser)
+#> Latent variables:  ttf k t1 t2 t3 
+#> # A tibble: 5 × 8
+#>      t1     t2    t3     k    ttf   tau      s right_censored
+#>   <dbl>  <dbl> <dbl> <int>  <dbl> <dbl>  <dbl> <lgl>         
+#> 1 0.542 0.346  0.140     3 0.140   0.35 0.140  FALSE         
+#> 2 0.708 1.08   0.481     3 0.481   0.35 0.35   TRUE          
+#> 3 0.199 0.469  0.313     1 0.199   0.35 0.199  FALSE         
+#> 4 0.449 0.560  0.277     3 0.277   0.35 0.277  FALSE         
+#> 5 0.242 0.0393 3.40      2 0.0393  0.35 0.0393 FALSE
+print(attributes(md.ser))
+#> $class
+#> [1] "tbl_md"     "tbl_df"     "tbl"        "data.frame"
+#> 
+#> $row.names
+#> [1] 1 2 3 4 5
+#> 
+#> $names
+#> [1] "t1"             "t2"             "t3"             "k"             
+#> [5] "ttf"            "tau"            "s"              "right_censored"
+#> 
+#> $structure
+#> [1] "parallel"
+#> 
+#> $latent
+#> [1] "ttf" "k"   "t1"  "t2"  "t3"
+```
+
+A parallel system is generated from these component times-to-failure
+with:
+
+``` r
+md.par <- md.tools::md_par_ttf(t,rep(tau,n))
+print(md.par)
+#> Latent variables:  ttf k t1 t2 t3 
+#> # A tibble: 5 × 8
+#>      t1     t2    t3   ttf k[,1] [,2]  [,3]    tau     s right_censored
+#>   <dbl>  <dbl> <dbl> <dbl> <lgl> <lgl> <lgl> <dbl> <dbl> <lgl>         
+#> 1 0.542 0.346  0.140 0.542 TRUE  TRUE  TRUE   0.35  0.35 TRUE          
+#> 2 0.708 1.08   0.481 1.08  TRUE  TRUE  TRUE   0.35  0.35 TRUE          
+#> 3 0.199 0.469  0.313 0.469 TRUE  TRUE  TRUE   0.35  0.35 TRUE          
+#> 4 0.449 0.560  0.277 0.560 TRUE  TRUE  TRUE   0.35  0.35 TRUE          
+#> 5 0.242 0.0393 3.40  3.40  TRUE  TRUE  TRUE   0.35  0.35 TRUE
+print(attributes(md.ser))
+#> $class
+#> [1] "tbl_md"     "tbl_df"     "tbl"        "data.frame"
+#> 
+#> $row.names
+#> [1] 1 2 3 4 5
+#> 
+#> $names
+#> [1] "t1"             "t2"             "t3"             "k"             
+#> [5] "ttf"            "tau"            "s"              "right_censored"
+#> 
+#> $structure
+#> [1] "parallel"
+#> 
+#> $latent
+#> [1] "ttf" "k"   "t1"  "t2"  "t3"
+```
 
 ## Decorators
 
@@ -119,11 +213,11 @@ print(md)
 #> # A tibble: 5 × 4
 #>   c1    c2    c3        k
 #>   <lgl> <lgl> <lgl> <int>
-#> 1 TRUE  TRUE  FALSE     1
-#> 2 FALSE TRUE  FALSE     1
-#> 3 FALSE TRUE  FALSE     2
-#> 4 FALSE TRUE  FALSE     1
-#> 5 TRUE  TRUE  FALSE     3
+#> 1 FALSE TRUE  FALSE     3
+#> 2 TRUE  TRUE  FALSE     2
+#> 3 TRUE  TRUE  FALSE     1
+#> 4 FALSE FALSE FALSE     1
+#> 5 FALSE TRUE  FALSE     2
 ```
 
 We may additionally have a candidate set encoded by the Boolean columns
@@ -138,11 +232,11 @@ print(md)
 #> # A tibble: 5 × 5
 #>   c1    c2    c3        k contains
 #>   <lgl> <lgl> <lgl> <int> <lgl>   
-#> 1 TRUE  TRUE  FALSE     1 TRUE    
-#> 2 FALSE TRUE  FALSE     1 FALSE   
-#> 3 FALSE TRUE  FALSE     2 TRUE    
-#> 4 FALSE TRUE  FALSE     3 FALSE   
-#> 5 TRUE  TRUE  FALSE     3 FALSE
+#> 1 FALSE TRUE  FALSE     1 FALSE   
+#> 2 TRUE  TRUE  FALSE     2 TRUE    
+#> 3 TRUE  TRUE  FALSE     3 FALSE   
+#> 4 FALSE FALSE FALSE     2 FALSE   
+#> 5 FALSE TRUE  FALSE     1 FALSE
 ```
 
 We see that there is a new column, `contains`, that tells us whether the
@@ -160,11 +254,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains     w
 #>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
-#> 1 TRUE  TRUE  FALSE     1 TRUE         2
-#> 2 FALSE TRUE  FALSE     1 FALSE        1
-#> 3 FALSE TRUE  FALSE     2 TRUE         1
-#> 4 FALSE TRUE  FALSE     3 FALSE        1
-#> 5 TRUE  TRUE  FALSE     3 FALSE        2
+#> 1 FALSE TRUE  FALSE     1 FALSE        1
+#> 2 TRUE  TRUE  FALSE     2 TRUE         2
+#> 3 TRUE  TRUE  FALSE     3 FALSE        2
+#> 4 FALSE FALSE FALSE     2 FALSE        0
+#> 5 FALSE TRUE  FALSE     1 FALSE        1
 ```
 
 We may *unmark* a column variable as latent with:
@@ -175,11 +269,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains     w
 #>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
-#> 1 TRUE  TRUE  FALSE     1 TRUE         2
-#> 2 FALSE TRUE  FALSE     1 FALSE        1
-#> 3 FALSE TRUE  FALSE     2 TRUE         1
-#> 4 FALSE TRUE  FALSE     3 FALSE        1
-#> 5 TRUE  TRUE  FALSE     3 FALSE        2
+#> 1 FALSE TRUE  FALSE     1 FALSE        1
+#> 2 TRUE  TRUE  FALSE     2 TRUE         2
+#> 3 TRUE  TRUE  FALSE     3 FALSE        2
+#> 4 FALSE FALSE FALSE     2 FALSE        0
+#> 5 FALSE TRUE  FALSE     1 FALSE        1
 ```
 
 The latent variable specification is metadata about the masked data

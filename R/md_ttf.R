@@ -4,7 +4,7 @@
 #'
 #' @param md a data frame of component failure times
 #' @param tau suspension time
-#' @param var component ttf symbolic variable, defaults to \code{t}
+#' @param var component symbolic variable, defaults to \code{t}
 #' @importFrom dplyr %>%
 #' @export
 md_par_ttf <- function(md, tau = NULL, var="t")
@@ -20,7 +20,8 @@ md_par_ttf <- function(md, tau = NULL, var="t")
   md$tau <- tau
   md$s <- ifelse(md$tau < md$ttf, md$tau, md$ttf)
   md$right_censored <- ifelse(md$tau < md$ttf, TRUE, FALSE)
-  md %>% md_mark_latent(c("ttf","k",paste0(var,1:m)))
+  attr(md,"structure") <- "series"
+  md.tools::md(md %>% md_mark_latent(c("ttf","k",paste0(var,1:m))))
 }
 
 #' Generates time-to-failure (ttf) and component cause of failure for a series
@@ -29,7 +30,7 @@ md_par_ttf <- function(md, tau = NULL, var="t")
 #'
 #' @param md a data frame with the indicated component times-to-failure
 #' @param tau suspension time
-#' @param var component ttf symbolic variable, defaults to \code{t}
+#' @param var component symbolic variable, defaults to \code{t}
 #' @importFrom dplyr %>%
 #' @export
 md_series_ttf <- function(md, tau=NULL, var="t")
@@ -43,5 +44,6 @@ md_series_ttf <- function(md, tau=NULL, var="t")
   md$tau <- tau
   md$s <- ifelse(md$tau < md$ttf, md$tau, md$ttf)
   md$right_censored <- ifelse(md$tau < md$ttf, TRUE, FALSE)
-  md %>% md_mark_latent(c("ttf","k",paste0(var,1:m)))
+  attr(md,"structure") <- "parallel"
+  md.tools::md(md %>% md_mark_latent(c("ttf","k",paste0(var,1:m))))
 }
