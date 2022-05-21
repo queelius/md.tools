@@ -101,7 +101,7 @@ We generate a sample of size $n=5$ of $m=3$ component times-to-failure with:
 ```{r}
 n <- 5
 m <- 3
-t <- tibble::as_tibble(matrix(rexp(n*m),ncol=m))
+t <- as_tibble(matrix(rexp(n*m),ncol=m))
 names(t) <- paste0("t",1:m)
 print(t)
 ```
@@ -110,16 +110,16 @@ Given a right-censoring time of $\tau=.35$, a series system is generated
 from these component times-to-failure with:
 ```{r}
 tau = .35
-md.ser <- t %>% md.tools::md_series_ttf(rep(tau,n))
+md.ser <- t %>% md_series_ttf(rep(tau,n))
 print(md.ser)
 print(attributes(md.ser))
 ```
 
 A parallel system is generated from these component times-to-failure with:
 ```{r}
-md.par <- md.tools::md_par_ttf(t,rep(tau,n))
+md.par <- md_par_ttf(t,rep(tau,n))
 print(md.par)
-print(attributes(md.ser))
+print(attributes(md.par))
 ```
 
 ## Decorators
@@ -197,7 +197,7 @@ Object Notation) in the *comments* of the tabular data file (like CSV), where
 a comment by default is anything after the `#` character on a line.
 
 ```{r}
-data <- md.tools::md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
+data <- md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
 print(data)
 ```
 
@@ -209,5 +209,6 @@ print(attributes(data))
 
 A lot of the metadata for `data` has to do with how the data was generated.
 In particular, we see this data is the result of a simulation
-for a series system with 3 exponentially distributed nodes parameterized
-by $\lambda = (3,4,5)'$ and candidate model `md_cand_m1`.
+for a series system with 3 exponentially distributed component lifetimes
+parameterized by $\lambda = (3,4,5)'$ and a candidate model that
+candidate model `md_cand_m1`.

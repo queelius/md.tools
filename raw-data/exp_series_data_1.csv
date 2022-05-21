@@ -1,6 +1,6 @@
 # {
 #   "comment": "this is a simulation test.",
-#   "family": "masked.data::md_exp_series",
+#   "family": "series.system.estimation.masked.data::md_exp_series",
 #   "index": [3, 4, 5],
 #   "nodes": [
 #     {
@@ -16,18 +16,18 @@
 #       "index": [5]
 #     }
 #   ],
-#   "candidate_model": ["md_cand_m1"],
-#   "call": ["masked.data::md_exp_series(n=1000,rate=c(3,4,5),cand_model=masked.data::md_cand_m1(alpha=rep(1,1000),w=rep(2,1000)))"],
-#   "latent": ["k", "t.1", "t.2", "t.3"],
-#   "observable": ["s", "w", "c.1", "c.2","c.3"],
+#   "candidate_model": ["md_regular_cand_model"],
+#   "call": ["series.system.estimation.masked.data::md_exp_series(n=1000,rate=c(3,4,5),cand_model=series.system.estimation.masked.data::md_regular_cand_model(gamma=c(.5,.5,.5))"],
+#   "latent": ["k", "t1", "t2", "t3"],
+#   "observable": ["t","x1","x2","x3"],
 #   "num_comp": [3],
 #   "sample_size": [1000]
 # }
-s,k,w,t.1,t.2,t.3,c.1,c.2,c.3
-0.14415256772190332,2,2,0.28115242035280075,0.14415256772190332,0.265810973561349,TRUE,TRUE,FALSE
-0.01052578636943731,1,2,0.01052578636943731,0.014052744023501873,0.06330024327554196,TRUE,FALSE,TRUE
-0.03631670097820461,2,2,0.1047424307384324,0.03631670097820461,0.5452472928659392,TRUE,TRUE,FALSE
-0.00971781569419085,1,2,0.00971781569419085,0.25120751442268796,0.09604294553195472,TRUE,FALSE,TRUE
+t,k,t1,t2,t3,x1,x2,x3
+0.14415256772190332,2,0.28115242035280075,0.14415256772190332,0.265810973561349,TRUE,TRUE,FALSE
+0.01052578636943731,1,0.01052578636943731,0.014052744023501873,0.06330024327554196,TRUE,FALSE,TRUE
+0.03631670097820461,2,0.1047424307384324,0.03631670097820461,0.5452472928659392,TRUE,TRUE,FALSE
+0.00971781569419085,1,0.00971781569419085,0.25120751442268796,0.09604294553195472,TRUE,FALSE,TRUE
 0.037656808178871876,3,2,0.09367120917886496,0.09427945776678341,0.037656808178871876,TRUE,FALSE,TRUE
 0.09575208326731102,3,2,0.2832620432460348,0.3908008849038244,0.09575208326731102,FALSE,TRUE,TRUE
 0.16862994622675478,3,2,0.19697827845811844,1.010252927843124,0.16862994622675478,FALSE,TRUE,TRUE

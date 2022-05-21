@@ -7,7 +7,7 @@
 #' @param var component symbolic variable, defaults to \code{t}
 #' @importFrom dplyr %>%
 #' @export
-md_par_ttf <- function(md, tau = NULL, var="t")
+md_par_ttf <- function(md, tau=NULL, var="t")
 {
   t <- md_decode_matrix(md,var)
   n <- nrow(t)
