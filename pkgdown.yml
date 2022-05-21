@@ -2,7 +2,7 @@ pandoc: 2.7.3
 pkgdown: 2.0.3
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-05-16T06:18Z
+last_built: 2022-05-21T06:40Z
 urls:
   reference: https://queelius.github.io/md.tools/reference
   article: https://queelius.github.io/md.tools/articles
