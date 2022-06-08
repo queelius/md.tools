@@ -16,7 +16,7 @@
     <loc>https://queelius.github.io/md.tools/index.html</loc>
   </url>
   <url>
-    <loc>https://queelius.github.io/md.tools/reference/exp_series_data_1.html</loc>
+    <loc>https://queelius.github.io/md.tools/reference/exp_series_md_1.html</loc>
   </url>
   <url>
     <loc>https://queelius.github.io/md.tools/reference/index.html</loc>
@@ -52,13 +52,7 @@
     <loc>https://queelius.github.io/md.tools/reference/md_mark_latent.html</loc>
   </url>
   <url>
-    <loc>https://queelius.github.io/md.tools/reference/md_par_ttf.html</loc>
-  </url>
-  <url>
     <loc>https://queelius.github.io/md.tools/reference/md_read_csv_with_meta.html</loc>
-  </url>
-  <url>
-    <loc>https://queelius.github.io/md.tools/reference/md_series_ttf.html</loc>
   </url>
   <url>
     <loc>https://queelius.github.io/md.tools/reference/md_unmark_latent.html</loc>

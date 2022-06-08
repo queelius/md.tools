@@ -90,18 +90,18 @@
 <code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
 <span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">3</span>
 <span class="va">C</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="cn">T</span>,<span class="cn">F</span><span class="op">)</span>, size<span class="op">=</span><span class="va">m</span><span class="op">*</span><span class="va">n</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>, nrow<span class="op">=</span><span class="va">n</span><span class="op">)</span></code></pre></div>
-<p>We may represent this in a data frame of 5 rows with the columns <code>c.1</code>, <code>c.2</code>, and <code>c.3</code> with:</p>
+<p>We may represent this in a data frame of 5 rows with the columns <code>c1</code>, <code>c2</code>, and <code>c3</code> with:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_encode_matrix.html">md_encode_matrix</a></span><span class="op">(</span><span class="va">C</span>,<span class="st">"c"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 × 3</span>
 <span class="co">#&gt;   c1    c2    c3   </span>
 <span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
-<span class="co">#&gt; 1 FALSE TRUE  TRUE </span>
-<span class="co">#&gt; 2 FALSE TRUE  TRUE </span>
-<span class="co">#&gt; 3 TRUE  FALSE FALSE</span>
-<span class="co">#&gt; 4 TRUE  TRUE  FALSE</span>
-<span class="co">#&gt; 5 TRUE  FALSE FALSE</span></code></pre></div>
+<span class="co">#&gt; 1 TRUE  TRUE  FALSE</span>
+<span class="co">#&gt; 2 FALSE FALSE FALSE</span>
+<span class="co">#&gt; 3 TRUE  TRUE  TRUE </span>
+<span class="co">#&gt; 4 FALSE FALSE TRUE </span>
+<span class="co">#&gt; 5 TRUE  TRUE  TRUE</span></code></pre></div>
 <p>We may also decode a matrix stored in a data frame with:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">C</span> <span class="op">==</span> <span class="fu"><a href="reference/md_decode_matrix.html">md_decode_matrix</a></span><span class="op">(</span><span class="va">md</span>,<span class="st">"c"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
@@ -115,116 +115,34 @@
     <span class="fu"><a href="reference/md_boolean_matrix_to_list.html">md_boolean_matrix_to_list</a></span><span class="op">(</span><span class="va">C</span><span class="op">)</span>,
     <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"{"</span>,<span class="fu"><a href="https://rdrr.io/r/base/toString.html" class="external-link">toString</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,<span class="st">"}"</span><span class="op">)</span> <span class="op">}</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt;   candidates</span>
-<span class="co">#&gt; 1     {2, 3}</span>
-<span class="co">#&gt; 2     {2, 3}</span>
-<span class="co">#&gt; 3        {1}</span>
-<span class="co">#&gt; 4     {1, 2}</span>
-<span class="co">#&gt; 5        {1}</span></code></pre></div>
+<span class="co">#&gt; 1     {1, 2}</span>
+<span class="co">#&gt; 2         {}</span>
+<span class="co">#&gt; 3  {1, 2, 3}</span>
+<span class="co">#&gt; 4        {3}</span>
+<span class="co">#&gt; 5  {1, 2, 3}</span></code></pre></div>
 <p>For completion, we allow converting between these two representations. Thus, the inverse of <code>md_boolean_matrix_to_list</code> is just <code>md_list_to_boolean_matrix</code>.</p>
-</div>
-<div class="section level2">
-<h2 id="system-structure-functions">System structure functions<a class="anchor" aria-label="anchor" href="#system-structure-functions"></a>
-</h2>
-<p>An important aspect to masked data is the type of lifetime data being modeled. In general, we define lifetime data as coming from some times-to-failure for a system consisting of the components. This system is described by a structure function, <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Cphi" title="\phi" alt="">. We provide structure functions for series, parallel, and <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;k" title="k" alt="k">-out-of-<img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;n" title="n" alt="n"> (koon).</p>
-<p>We generate a sample of size <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;n%3D5" title="n=5" alt="n=5"> of <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;m%3D3" title="m=3" alt="m=3"> component times-to-failure with:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">5</span>
-<span class="va">m</span> <span class="op">&lt;-</span> <span class="fl">3</span>
-<span class="va">t</span> <span class="op">&lt;-</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="va">n</span><span class="op">*</span><span class="va">m</span><span class="op">)</span>,ncol<span class="op">=</span><span class="va">m</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.</span>
-<span class="co">#&gt; Using compatibility `.name_repair`.</span>
-<span class="co">#&gt; This warning is displayed once every 8 hours.</span>
-<span class="co">#&gt; Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</span>
-<span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"t"</span>,<span class="fl">1</span><span class="op">:</span><span class="va">m</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">t</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 5 × 3</span>
-<span class="co">#&gt;       t1     t2     t3</span>
-<span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 0.0838 0.0534 0.0679</span>
-<span class="co">#&gt; 2 0.686  0.733  0.419 </span>
-<span class="co">#&gt; 3 0.662  2.50   2.61  </span>
-<span class="co">#&gt; 4 0.0211 3.49   2.30  </span>
-<span class="co">#&gt; 5 0.375  2.14   1.57</span></code></pre></div>
-<p>Given a right-censoring time of <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Ctau%3D.35" title="\tau=.35" alt="=.35">, a series system is generated from these component times-to-failure with:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tau</span> <span class="op">=</span> <span class="fl">.35</span>
-<span class="va">md.ser</span> <span class="op">&lt;-</span> <span class="va">t</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/md_series_ttf.html">md_series_ttf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">tau</span>,<span class="va">n</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md.ser</span><span class="op">)</span>
-<span class="co">#&gt; Latent variables:  ttf k t1 t2 t3 </span>
-<span class="co">#&gt; # A tibble: 5 × 8</span>
-<span class="co">#&gt;       t1     t2     t3     k    ttf   tau      s right_censored</span>
-<span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;int&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt;         </span>
-<span class="co">#&gt; 1 0.0838 0.0534 0.0679     2 0.0534  0.35 0.0534 FALSE         </span>
-<span class="co">#&gt; 2 0.686  0.733  0.419      3 0.419   0.35 0.35   TRUE          </span>
-<span class="co">#&gt; 3 0.662  2.50   2.61       1 0.662   0.35 0.35   TRUE          </span>
-<span class="co">#&gt; 4 0.0211 3.49   2.30       1 0.0211  0.35 0.0211 FALSE         </span>
-<span class="co">#&gt; 5 0.375  2.14   1.57       1 0.375   0.35 0.35   TRUE</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">md.ser</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; $class</span>
-<span class="co">#&gt; [1] "tbl_md"     "tbl_df"     "tbl"        "data.frame"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $row.names</span>
-<span class="co">#&gt; [1] 1 2 3 4 5</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $names</span>
-<span class="co">#&gt; [1] "t1"             "t2"             "t3"             "k"             </span>
-<span class="co">#&gt; [5] "ttf"            "tau"            "s"              "right_censored"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $structure</span>
-<span class="co">#&gt; [1] "parallel"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $latent</span>
-<span class="co">#&gt; [1] "ttf" "k"   "t1"  "t2"  "t3"</span></code></pre></div>
-<p>A parallel system is generated from these component times-to-failure with:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">md.par</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_par_ttf.html">md_par_ttf</a></span><span class="op">(</span><span class="va">t</span>,<span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">tau</span>,<span class="va">n</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md.par</span><span class="op">)</span>
-<span class="co">#&gt; Latent variables:  ttf k t1 t2 t3 </span>
-<span class="co">#&gt; # A tibble: 5 × 8</span>
-<span class="co">#&gt;       t1     t2     t3    ttf k[,1] [,2]  [,3]    tau      s right_censored</span>
-<span class="co">#&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt;         </span>
-<span class="co">#&gt; 1 0.0838 0.0534 0.0679 0.0838 TRUE  TRUE  TRUE   0.35 0.0838 FALSE         </span>
-<span class="co">#&gt; 2 0.686  0.733  0.419  0.733  TRUE  TRUE  TRUE   0.35 0.35   TRUE          </span>
-<span class="co">#&gt; 3 0.662  2.50   2.61   2.61   TRUE  TRUE  TRUE   0.35 0.35   TRUE          </span>
-<span class="co">#&gt; 4 0.0211 3.49   2.30   3.49   TRUE  TRUE  TRUE   0.35 0.35   TRUE          </span>
-<span class="co">#&gt; 5 0.375  2.14   1.57   2.14   TRUE  TRUE  TRUE   0.35 0.35   TRUE</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">md.par</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; $class</span>
-<span class="co">#&gt; [1] "tbl_md"     "tbl_df"     "tbl"        "data.frame"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $row.names</span>
-<span class="co">#&gt; [1] 1 2 3 4 5</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $names</span>
-<span class="co">#&gt; [1] "t1"             "t2"             "t3"             "ttf"           </span>
-<span class="co">#&gt; [5] "k"              "tau"            "s"              "right_censored"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $structure</span>
-<span class="co">#&gt; [1] "series"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $latent</span>
-<span class="co">#&gt; [1] "ttf" "k"   "t1"  "t2"  "t3"</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="decorators">Decorators<a class="anchor" aria-label="anchor" href="#decorators"></a>
 </h2>
 <p>We now consider some data frame transformations that adds additional columns with information that may be inferred from what is already in the data frame. For this reason, we have chosen to call them <em>decorators</em>.</p>
 <p>In a masked data frame, we may have a column <code>k</code> that stores the failed component. We simulate failed components and mark them as <em>latent</em> with:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op">%&gt;%</span> <span class="fu">mutate</span><span class="op">(</span>k<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op">%&gt;%</span>
+  <span class="fu">mutate</span><span class="op">(</span>k<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu"><a href="reference/md_mark_latent.html">md_mark_latent</a></span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
 <span class="co">#&gt; Latent variables:  k </span>
 <span class="co">#&gt; # A tibble: 5 × 4</span>
 <span class="co">#&gt;   c1    c2    c3        k</span>
 <span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt;</span>
-<span class="co">#&gt; 1 FALSE TRUE  TRUE      2</span>
-<span class="co">#&gt; 2 FALSE TRUE  TRUE      2</span>
-<span class="co">#&gt; 3 TRUE  FALSE FALSE     1</span>
-<span class="co">#&gt; 4 TRUE  TRUE  FALSE     1</span>
-<span class="co">#&gt; 5 TRUE  FALSE FALSE     3</span></code></pre></div>
+<span class="co">#&gt; 1 TRUE  TRUE  FALSE     2</span>
+<span class="co">#&gt; 2 FALSE FALSE FALSE     2</span>
+<span class="co">#&gt; 3 TRUE  TRUE  TRUE      3</span>
+<span class="co">#&gt; 4 FALSE FALSE TRUE      2</span>
+<span class="co">#&gt; 5 TRUE  TRUE  TRUE      3</span></code></pre></div>
 <p>We may additionally have a candidate set encoded by the Boolean columns <code>c1</code>,…,<code>cm</code>, in which case we may infer whether the candidate set <em>contains</em> the failed component <code>k</code> with:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">md</span><span class="op">$</span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">m</span>,<span class="va">n</span>,replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>
 <span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/md_cand_contains.html">md_cand_contains</a></span><span class="op">(</span><span class="st">"c"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
@@ -232,37 +150,37 @@
 <span class="co">#&gt; # A tibble: 5 × 5</span>
 <span class="co">#&gt;   c1    c2    c3        k contains</span>
 <span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt; &lt;lgl&gt;   </span>
-<span class="co">#&gt; 1 FALSE TRUE  TRUE      2 TRUE    </span>
-<span class="co">#&gt; 2 FALSE TRUE  TRUE      2 TRUE    </span>
-<span class="co">#&gt; 3 TRUE  FALSE FALSE     3 FALSE   </span>
-<span class="co">#&gt; 4 TRUE  TRUE  FALSE     2 TRUE    </span>
-<span class="co">#&gt; 5 TRUE  FALSE FALSE     2 FALSE</span></code></pre></div>
+<span class="co">#&gt; 1 TRUE  TRUE  FALSE     2 TRUE    </span>
+<span class="co">#&gt; 2 FALSE FALSE FALSE     1 FALSE   </span>
+<span class="co">#&gt; 3 TRUE  TRUE  TRUE      3 TRUE    </span>
+<span class="co">#&gt; 4 FALSE FALSE TRUE      3 TRUE    </span>
+<span class="co">#&gt; 5 TRUE  TRUE  TRUE      3 TRUE</span></code></pre></div>
 <p>We see that there is a new column, <code>contains</code>, that tells us whether the candidate set actually contains the failed component. No new information is given by this column, it only presents what information that is already there in a potentially more conventient format.</p>
 <p>Given the same data frame and candidate set, we may determine the <em>cardinality</em> of the candidate sets with:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op">%&gt;%</span> <span class="fu"><a href="reference/md_cand_sizes.html">md_cand_sizes</a></span><span class="op">(</span><span class="st">"c"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
 <span class="co">#&gt; Latent variables:  k </span>
 <span class="co">#&gt; # A tibble: 5 × 6</span>
 <span class="co">#&gt;   c1    c2    c3        k contains     w</span>
 <span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt; &lt;lgl&gt;    &lt;int&gt;</span>
-<span class="co">#&gt; 1 FALSE TRUE  TRUE      2 TRUE         2</span>
-<span class="co">#&gt; 2 FALSE TRUE  TRUE      2 TRUE         2</span>
-<span class="co">#&gt; 3 TRUE  FALSE FALSE     3 FALSE        1</span>
-<span class="co">#&gt; 4 TRUE  TRUE  FALSE     2 TRUE         2</span>
-<span class="co">#&gt; 5 TRUE  FALSE FALSE     2 FALSE        1</span></code></pre></div>
+<span class="co">#&gt; 1 TRUE  TRUE  FALSE     2 TRUE         2</span>
+<span class="co">#&gt; 2 FALSE FALSE FALSE     1 FALSE        0</span>
+<span class="co">#&gt; 3 TRUE  TRUE  TRUE      3 TRUE         3</span>
+<span class="co">#&gt; 4 FALSE FALSE TRUE      3 TRUE         1</span>
+<span class="co">#&gt; 5 TRUE  TRUE  TRUE      3 TRUE         3</span></code></pre></div>
 <p>We may <em>unmark</em> a column variable as latent with:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op">%&gt;%</span> <span class="fu">md.tools</span><span class="fu">::</span><span class="fu"><a href="reference/md_unmark_latent.html">md_unmark_latent</a></span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">md</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 × 6</span>
 <span class="co">#&gt;   c1    c2    c3        k contains     w</span>
 <span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt; &lt;lgl&gt;    &lt;int&gt;</span>
-<span class="co">#&gt; 1 FALSE TRUE  TRUE      2 TRUE         2</span>
-<span class="co">#&gt; 2 FALSE TRUE  TRUE      2 TRUE         2</span>
-<span class="co">#&gt; 3 TRUE  FALSE FALSE     3 FALSE        1</span>
-<span class="co">#&gt; 4 TRUE  TRUE  FALSE     2 TRUE         2</span>
-<span class="co">#&gt; 5 TRUE  FALSE FALSE     2 FALSE        1</span></code></pre></div>
+<span class="co">#&gt; 1 TRUE  TRUE  FALSE     2 TRUE         2</span>
+<span class="co">#&gt; 2 FALSE FALSE FALSE     1 FALSE        0</span>
+<span class="co">#&gt; 3 TRUE  TRUE  TRUE      3 TRUE         3</span>
+<span class="co">#&gt; 4 FALSE FALSE TRUE      3 TRUE         1</span>
+<span class="co">#&gt; 5 TRUE  TRUE  TRUE      3 TRUE         3</span></code></pre></div>
 <p>The latent variable specification is metadata about the masked data frame, but it does not necessarily impose any requirements on algorithms applied to it.</p>
 <p>More generally, a masked data frame may have a lot more metadata about it, and we provide some tools for working with them. However, for the most part, you are expected to handle the metadata yourself. The metadata is stored in the <em>attributes</em>, and so underneath the hood, a masked data frame is just a data frame and may be treated as one.</p>
 </div>
@@ -272,36 +190,34 @@
 <p>To read and write data frames for sharing with others, including yourself, we prefer to work with plaintext files like CSV files, where each row corresponds to some set of measurements of some experimental unit.</p>
 <p>However, we may also want to store <em>metadata</em> about the experiment that generated the data, or we may wish to store more information about the experimental units that does not naturally fit into the data frame model.</p>
 <p>To store metadata, we take the general approach of storing JSON (Javscript Object Notation) in the <em>comments</em> of the tabular data file (like CSV), where a comment by default is anything after the <code>#</code> character on a line.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_read_csv_with_meta.html">md_read_csv_with_meta</a></span><span class="op">(</span><span class="st">"./raw-data/exp_series_data_1.csv"</span><span class="op">)</span>
-<span class="co">#&gt; Warning: One or more parsing issues, see `problems()` for details</span>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/md_read_csv_with_meta.html">md_read_csv_with_meta</a></span><span class="op">(</span><span class="st">"./data-raw/exp_series_md_1.csv"</span><span class="op">)</span>
 <span class="co">#&gt; Rows: 1000 Columns: 8</span>
 <span class="co">#&gt; ── Column specification ────────────────────────────────────────────────────────</span>
 <span class="co">#&gt; Delimiter: ","</span>
-<span class="co">#&gt; chr (2): x1, x3</span>
 <span class="co">#&gt; dbl (5): t, k, t1, t2, t3</span>
-<span class="co">#&gt; lgl (1): x2</span>
+<span class="co">#&gt; lgl (3): x1, x2, x3</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; ℹ Use `spec()` to retrieve the full column specification for this data.</span>
 <span class="co">#&gt; ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
 <span class="co">#&gt; Latent variables:  k t1 t2 t3 </span>
 <span class="co">#&gt; # A tibble: 1,000 × 8</span>
-<span class="co">#&gt;          t     k      t1     t2      t3 x1                   x2    x3        </span>
-<span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                &lt;lgl&gt; &lt;chr&gt;     </span>
-<span class="co">#&gt;  1 0.144       2 0.281   0.144  0.266   TRUE                 TRUE  FALSE     </span>
-<span class="co">#&gt;  2 0.0105      1 0.0105  0.0141 0.0633  TRUE                 FALSE TRUE      </span>
-<span class="co">#&gt;  3 0.0363      2 0.105   0.0363 0.545   TRUE                 TRUE  FALSE     </span>
-<span class="co">#&gt;  4 0.00972     1 0.00972 0.251  0.0960  TRUE                 FALSE TRUE      </span>
-<span class="co">#&gt;  5 0.0377      3 2       0.0937 0.0943  0.037656808178871876 TRUE  FALSE,TRUE</span>
-<span class="co">#&gt;  6 0.0958      3 2       0.283  0.391   0.09575208326731102  FALSE TRUE,TRUE </span>
-<span class="co">#&gt;  7 0.169       3 2       0.197  1.01    0.16862994622675478  FALSE TRUE,TRUE </span>
-<span class="co">#&gt;  8 0.270       3 2       0.322  0.371   0.26960889714861164  FALSE TRUE,TRUE </span>
-<span class="co">#&gt;  9 0.299       3 2       0.390  0.401   0.29934857374239454  TRUE  FALSE,TRUE</span>
-<span class="co">#&gt; 10 0.00794     2 2       0.524  0.00794 0.11956993825733662  FALSE TRUE,TRUE </span>
+<span class="co">#&gt;          t     k      t1      t2     t3 x1    x2    x3   </span>
+<span class="co">#&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;</span>
+<span class="co">#&gt;  1 0.144       2 0.281   0.144   0.266  TRUE  TRUE  FALSE</span>
+<span class="co">#&gt;  2 0.0105      1 0.0105  0.0141  0.0633 TRUE  FALSE TRUE </span>
+<span class="co">#&gt;  3 0.0363      2 0.105   0.0363  0.545  TRUE  TRUE  FALSE</span>
+<span class="co">#&gt;  4 0.00972     1 0.00972 0.251   0.0960 TRUE  FALSE TRUE </span>
+<span class="co">#&gt;  5 0.0377      3 0.0937  0.0943  0.0377 TRUE  FALSE TRUE </span>
+<span class="co">#&gt;  6 0.0958      3 0.283   0.391   0.0958 FALSE TRUE  TRUE </span>
+<span class="co">#&gt;  7 0.169       3 0.197   1.01    0.169  FALSE TRUE  TRUE </span>
+<span class="co">#&gt;  8 0.270       3 0.322   0.371   0.270  FALSE TRUE  TRUE </span>
+<span class="co">#&gt;  9 0.299       3 0.390   0.401   0.299  TRUE  FALSE TRUE </span>
+<span class="co">#&gt; 10 0.00794     2 0.524   0.00794 0.120  FALSE TRUE  TRUE </span>
 <span class="co">#&gt; # … with 990 more rows</span></code></pre></div>
 <p>We may view all of the metadata stored in <code>data</code>, minus the <code>row.names</code>, with:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">data</span>,<span class="st">"row.names"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/attributes.html" class="external-link">attributes</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; $class</span>
@@ -313,23 +229,17 @@
 <span class="co">#&gt; $comment</span>
 <span class="co">#&gt; [1] "this is a simulation test."</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $family</span>
-<span class="co">#&gt; [1] "series.system.estimation.masked.data::md_exp_series"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $index</span>
+<span class="co">#&gt; $param</span>
 <span class="co">#&gt; [1] 3 4 5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $nodes</span>
-<span class="co">#&gt;        family index</span>
+<span class="co">#&gt; $components</span>
+<span class="co">#&gt;        family param</span>
 <span class="co">#&gt; 1 exponential     3</span>
 <span class="co">#&gt; 2 exponential     4</span>
 <span class="co">#&gt; 3 exponential     5</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; $candidate_model</span>
-<span class="co">#&gt; [1] "md_regular_cand_model"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $call</span>
-<span class="co">#&gt; [1] "series.system.estimation.masked.data::md_exp_series(n=1000,rate=c(3,4,5),cand_model=series.system.estimation.masked.data::md_regular_cand_model(gamma=c(.5,.5,.5))"</span>
+<span class="co">#&gt; $candidate_conditions</span>
+<span class="co">#&gt; [1] "C1" "C2" "C3"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $latent</span>
 <span class="co">#&gt; [1] "k"  "t1" "t2" "t3"</span>
@@ -342,7 +252,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $sample_size</span>
 <span class="co">#&gt; [1] 1000</span></code></pre></div>
-<p>A lot of the metadata for <code>data</code> has to do with how the data was generated. In particular, we see this data is the result of a simulation for a series system with 3 exponentially distributed component lifetimes parameterized by <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Clambda%20%3D%20%283%2C4%2C5%29%27" title="\lambda = (3,4,5)'" alt="= (3,4,5)’"> and a candidate model that candidate model <code>md_cand_m1</code>.</p>
+<p>A lot of the metadata for <code>data</code> has to do with how the data was generated. In particular, we see this data is the result of a simulation for a series system with 3 exponentially distributed component lifetimes parameterized by <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;%5Clambda%20%3D%20%283%2C4%2C5%29%27" title="\lambda = (3,4,5)'" alt="= (3,4,5)’"> and a candidate model consistent with conditions <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;C_1" title="C_1" alt="C_1">, <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;C_2" title="C_2" alt="C_2">, and <img src="https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&amp;space;%5Cbg_white&amp;space;C_3" title="C_3" alt="C_3"> for series systems with a masked component cause of failure in the form of candidate sets.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
