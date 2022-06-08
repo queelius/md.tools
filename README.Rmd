@@ -90,38 +90,6 @@ For completion, we allow converting between these two representations.
 Thus, the inverse of `md_boolean_matrix_to_list` is just
 `md_list_to_boolean_matrix`.
 
-## System structure functions
-An important aspect to masked data is the type of lifetime data being modeled.
-In general, we define lifetime data as coming from some times-to-failure
-for a system consisting of the components.
-This system is described by a structure function, $\phi$.
-We provide structure functions for series, parallel, and $k$-out-of-$n$ (koon).
-
-We generate a sample of size $n=5$ of $m=3$ component times-to-failure with:
-```{r}
-n <- 5
-m <- 3
-t <- as_tibble(matrix(rexp(n*m),ncol=m))
-names(t) <- paste0("t",1:m)
-print(t)
-```
-
-Given a right-censoring time of $\tau=.35$, a series system is generated
-from these component times-to-failure with:
-```{r}
-tau = .35
-md.ser <- t %>% md_series_ttf(rep(tau,n))
-print(md.ser)
-print(attributes(md.ser))
-```
-
-A parallel system is generated from these component times-to-failure with:
-```{r}
-md.par <- md_par_ttf(t,rep(tau,n))
-print(md.par)
-print(attributes(md.par))
-```
-
 ## Decorators
 We now consider some data frame transformations that adds
 additional columns with information that may be
@@ -133,7 +101,8 @@ that stores the failed component.
 We simulate failed components and mark them
 as *latent* with:
 ```{r}
-md <- md %>% mutate(k=sample(1:m,n,replace=TRUE)) %>%
+md <- md %>%
+  mutate(k=sample(1:m,n,replace=TRUE)) %>%
   md_mark_latent("k")
 print(md)
 ```
@@ -197,7 +166,7 @@ Object Notation) in the *comments* of the tabular data file (like CSV), where
 a comment by default is anything after the `#` character on a line.
 
 ```{r}
-data <- md_read_csv_with_meta("./raw-data/exp_series_data_1.csv")
+data <- md_read_csv_with_meta("./data-raw/exp_series_md_1.csv")
 print(data)
 ```
 
