@@ -48,8 +48,8 @@ m <- 3
 C <- matrix(sample(c(T,F), size=m*n, replace=TRUE), nrow=n)
 ```
 
-We may represent this in a data frame of 5 rows with the columns `c.1`,
-`c.2`, and `c.3` with:
+We may represent this in a data frame of 5 rows with the columns `c1`,
+`c2`, and `c3` with:
 
 ``` r
 md <- md_encode_matrix(C,"c")
@@ -57,11 +57,11 @@ print(md)
 #> # A tibble: 5 × 3
 #>   c1    c2    c3   
 #>   <lgl> <lgl> <lgl>
-#> 1 TRUE  FALSE TRUE 
+#> 1 TRUE  TRUE  FALSE
 #> 2 FALSE FALSE FALSE
-#> 3 FALSE FALSE TRUE 
-#> 4 FALSE TRUE  TRUE 
-#> 5 FALSE TRUE  FALSE
+#> 3 TRUE  TRUE  TRUE 
+#> 4 FALSE FALSE TRUE 
+#> 5 TRUE  TRUE  TRUE
 ```
 
 We may also decode a matrix stored in a data frame with:
@@ -92,11 +92,11 @@ as.data.frame(md %>% dplyr::select(-starts_with("c")) %>%
     md_boolean_matrix_to_list(C),
     function(x) { paste0("{",toString(x),"}") })))
 #>   candidates
-#> 1     {1, 3}
+#> 1     {1, 2}
 #> 2         {}
-#> 3        {3}
-#> 4     {2, 3}
-#> 5        {2}
+#> 3  {1, 2, 3}
+#> 4        {3}
+#> 5  {1, 2, 3}
 ```
 
 For completion, we allow converting between these two representations.
@@ -122,11 +122,11 @@ print(md)
 #> # A tibble: 5 × 4
 #>   c1    c2    c3        k
 #>   <lgl> <lgl> <lgl> <int>
-#> 1 TRUE  FALSE TRUE      2
-#> 2 FALSE FALSE FALSE     1
-#> 3 FALSE FALSE TRUE      3
-#> 4 FALSE TRUE  TRUE      2
-#> 5 FALSE TRUE  FALSE     2
+#> 1 TRUE  TRUE  FALSE     2
+#> 2 FALSE FALSE FALSE     2
+#> 3 TRUE  TRUE  TRUE      3
+#> 4 FALSE FALSE TRUE      2
+#> 5 TRUE  TRUE  TRUE      3
 ```
 
 We may additionally have a candidate set encoded by the Boolean columns
@@ -141,11 +141,11 @@ print(md)
 #> # A tibble: 5 × 5
 #>   c1    c2    c3        k contains
 #>   <lgl> <lgl> <lgl> <int> <lgl>   
-#> 1 TRUE  FALSE TRUE      3 TRUE    
-#> 2 FALSE FALSE FALSE     2 FALSE   
-#> 3 FALSE FALSE TRUE      3 TRUE    
-#> 4 FALSE TRUE  TRUE      3 TRUE    
-#> 5 FALSE TRUE  FALSE     1 FALSE
+#> 1 TRUE  TRUE  FALSE     2 TRUE    
+#> 2 FALSE FALSE FALSE     1 FALSE   
+#> 3 TRUE  TRUE  TRUE      3 TRUE    
+#> 4 FALSE FALSE TRUE      3 TRUE    
+#> 5 TRUE  TRUE  TRUE      3 TRUE
 ```
 
 We see that there is a new column, `contains`, that tells us whether the
@@ -163,11 +163,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains     w
 #>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
-#> 1 TRUE  FALSE TRUE      3 TRUE         2
-#> 2 FALSE FALSE FALSE     2 FALSE        0
-#> 3 FALSE FALSE TRUE      3 TRUE         1
-#> 4 FALSE TRUE  TRUE      3 TRUE         2
-#> 5 FALSE TRUE  FALSE     1 FALSE        1
+#> 1 TRUE  TRUE  FALSE     2 TRUE         2
+#> 2 FALSE FALSE FALSE     1 FALSE        0
+#> 3 TRUE  TRUE  TRUE      3 TRUE         3
+#> 4 FALSE FALSE TRUE      3 TRUE         1
+#> 5 TRUE  TRUE  TRUE      3 TRUE         3
 ```
 
 We may *unmark* a column variable as latent with:
@@ -178,11 +178,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains     w
 #>   <lgl> <lgl> <lgl> <int> <lgl>    <int>
-#> 1 TRUE  FALSE TRUE      3 TRUE         2
-#> 2 FALSE FALSE FALSE     2 FALSE        0
-#> 3 FALSE FALSE TRUE      3 TRUE         1
-#> 4 FALSE TRUE  TRUE      3 TRUE         2
-#> 5 FALSE TRUE  FALSE     1 FALSE        1
+#> 1 TRUE  TRUE  FALSE     2 TRUE         2
+#> 2 FALSE FALSE FALSE     1 FALSE        0
+#> 3 TRUE  TRUE  TRUE      3 TRUE         3
+#> 4 FALSE FALSE TRUE      3 TRUE         1
+#> 5 TRUE  TRUE  TRUE      3 TRUE         3
 ```
 
 The latent variable specification is metadata about the masked data
@@ -259,12 +259,12 @@ print(attributes(data))
 #> [1] 3 4 5
 #> 
 #> $components
-#>        family param index
-#> 1 exponential     3  NULL
-#> 2 exponential     4  NULL
-#> 3 exponential  NULL     5
+#>        family param
+#> 1 exponential     3
+#> 2 exponential     4
+#> 3 exponential     5
 #> 
-#> $candidate_model
+#> $candidate_conditions
 #> [1] "C1" "C2" "C3"
 #> 
 #> $latent
@@ -285,4 +285,10 @@ generated. In particular, we see this data is the result of a simulation
 for a series system with 3 exponentially distributed component lifetimes
 parameterized by
 ![\lambda = (3,4,5)'](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;%5Clambda%20%3D%20%283%2C4%2C5%29%27 "\lambda = (3,4,5)'")
-and a candidate model that candidate model `md_cand_m1`.
+and a candidate model consistent with conditions
+![C_1](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;C_1 "C_1"),
+![C_2](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;C_2 "C_2"),
+and
+![C_3](https://latex.codecogs.com/png.image?%5Cdpi%7B110%7D&space;%5Cbg_white&space;C_3 "C_3")
+for series systems with a masked component cause of failure in the form
+of candidate sets.

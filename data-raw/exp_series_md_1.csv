@@ -12,10 +12,10 @@
 #     },
 #     {
 #       "family": ["exponential"],
-#       "index": [5]
+#       "param": [5]
 #     }
 #   ],
-#   "candidate_model": ["C1","C2","C3"],
+#   "candidate_conditions": ["C1","C2","C3"],
 #   "latent": ["k", "t1", "t2", "t3"],
 #   "observable": ["t","x1","x2","x3"],
 #   "num_comp": [3],

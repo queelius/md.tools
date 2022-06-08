@@ -58,8 +58,8 @@ m <- 3
 C <- matrix(sample(c(T,F), size=m*n, replace=TRUE), nrow=n)
 ```
 
-We may represent this in a data frame of `r n` rows with the columns `c.1`,
-`c.2`, and `c.3` with:
+We may represent this in a data frame of `r n` rows with the columns `c1`,
+`c2`, and `c3` with:
 ```{r}
 md <- md_encode_matrix(C,"c")
 print(md)
@@ -179,5 +179,6 @@ print(attributes(data))
 A lot of the metadata for `data` has to do with how the data was generated.
 In particular, we see this data is the result of a simulation
 for a series system with 3 exponentially distributed component lifetimes
-parameterized by $\lambda = (3,4,5)'$ and a candidate model that
-candidate model `md_cand_m1`.
+parameterized by $\lambda = (3,4,5)'$ and a candidate model consistent
+with conditions $C_1$, $C_2$, and $C_3$ for series systems with a masked
+component cause of failure in the form of candidate sets.
