@@ -43,6 +43,8 @@ md_unmark_latent <- function(md, vars)
 #' @param df data frame that contains the matrix
 #' @param var the symbolic name of the matrix
 #' @return a matrix
+#' @importFrom purrr is_empty
+#' @importFrom stringr str_replace
 #' @export
 md_decode_matrix <- function(df,var)
 {
@@ -91,6 +93,7 @@ md_list_to_boolean_matrix <- function(xs)
 #' @param mat matrix
 #' @param var the symbolic name of the matrix (prefix of column names)
 #' @return a tibble (data frame) encoding of a matrix
+#' @importFrom tibble as_tibble
 #' @export
 md_encode_matrix <- function(mat,var)
 {
@@ -105,6 +108,7 @@ md_encode_matrix <- function(mat,var)
 #' @param drop_latent If TRUE, drop the latent random variables
 #' @param ... additional arguments to pass
 #' @importFrom dplyr %>%
+#' @importFrom dplyr select
 #' @export
 print.tbl_md <- function(x,drop_latent=F,...)
 {
@@ -133,6 +137,7 @@ is_md <- function(x)
 #' which variables are latent in the model.
 #'
 #' @param x object to convert to masked data.
+#' @importFrom tibble as_tibble
 #' @export
 md <- function(x)
 {
@@ -150,6 +155,8 @@ md <- function(x)
 #'
 #' @param md masked data frame
 #' @param var column prefix for matrix encoding
+#' @importFrom tibble as_tibble
+#' @importFrom dplyr bind_cols
 #' @export
 md_cand_sizes <- function(md,var="x")
 {

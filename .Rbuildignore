@@ -6,3 +6,8 @@
 ^\.github$
 ^LICENSE\.md$
 ^README\.Rmd$
+^data-raw$
+^doc$
+^Meta$
+md.tools.Rproj
+

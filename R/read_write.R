@@ -5,7 +5,8 @@
 #' @param file filename for csv
 #' @param comment denotes a comment block
 #' @param ... additional arguments to pass
-#'
+#' @importFrom readr write_lines
+#' @importFrom readr write_csv
 #' @export
 md_write_csv_with_meta <- function(df, file, comment="#",...)
 {
@@ -22,7 +23,8 @@ md_write_csv_with_meta <- function(df, file, comment="#",...)
 #' @param comment comment indicator, defaults to \code{#}
 #' @param max_meta_lns limit metadata search to the indicated number of lines
 #' @param ... additional arguments to pass, like \code{skip}
-#'
+#' @importFrom readr read_lines
+#' @importFrom readr read_csv
 #' @export
 md_read_csv_with_meta <- function(file,read_meta=T,comment="#",
                                   max_meta_lns=1000,...)

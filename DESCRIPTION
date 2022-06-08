@@ -13,12 +13,11 @@ Description: A set of tools for reading, writing, and manipulating masked
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 URL: https://queelius.github.io/md.tools/,
     https://github.com/queelius/md.tools
 Imports:
     purrr,
-    stats,
     dplyr,
     tibble,
     jsonlite,
