@@ -2,15 +2,18 @@
 % Please edit documentation in R/md_tools.R
 \name{md_mark_latent}
 \alias{md_mark_latent}
-\title{Mark a variable in a masked data frame as latent.}
+\title{md_mark_latent}
 \usage{
 md_mark_latent(md, vars)
 }
 \arguments{
 \item{md}{masked data to modify}
 
-\item{vars}{variables to mark as latent.}
+\item{vars}{character vector containing variables to mark as latent.}
+}
+\value{
+modified masked data with updated latent variables
 }
 \description{
-Mark a variable in a masked data frame as latent.
+Mark variables in a masked data frame as latent.
 }

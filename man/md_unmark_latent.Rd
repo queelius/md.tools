@@ -2,15 +2,18 @@
 % Please edit documentation in R/md_tools.R
 \name{md_unmark_latent}
 \alias{md_unmark_latent}
-\title{Mark a variable in a masked data frame as latent.}
+\title{md_unmark_latent}
 \usage{
 md_unmark_latent(md, vars)
 }
 \arguments{
 \item{md}{masked data to modify}
 
-\item{vars}{variables to mark as latent.}
+\item{vars}{character vector containing variables to unmark as latent.}
+}
+\value{
+modified masked data with updated latent variables
 }
 \description{
-Mark a variable in a masked data frame as latent.
+Unmark variables in a masked data frame as latent.
 }

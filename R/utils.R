@@ -1,13 +1,3 @@
-# helper function
-md_write_as_json <- function(file,ls)
-{
-  x[["names"]] <- NULL
-  x[["row.names"]] <- NULL
-  x[["problems"]] <- NULL
-  x[["spec"]] <- NULL
-
-  jsonlite::write_json(x,file,simplifyVector=T,pretty=T)
-}
 
 # helper function
 md_read_json <- function(file,prefix="",max_lines=-1L)

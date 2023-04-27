@@ -2,13 +2,16 @@
 % Please edit documentation in R/md_tools.R
 \name{md_boolean_matrix_to_list}
 \alias{md_boolean_matrix_to_list}
-\title{Map Boolean matrix \code{mat} to a list of integer vectors.}
+\title{Map Boolean matrix `mat` to a list of integer vectors.}
 \usage{
 md_boolean_matrix_to_list(mat)
 }
 \arguments{
 \item{mat}{Boolean matrix}
 }
+\value{
+list of integer vectors
+}
 \description{
-Map Boolean matrix \code{mat} to a list of integer vectors.
+Map Boolean matrix `mat` to a list of integer vectors.
 }

@@ -2,13 +2,13 @@
 % Please edit documentation in R/read_write.R
 \name{md_read_csv_with_meta}
 \alias{md_read_csv_with_meta}
-\title{Read a (masked) data frame table from a connection (e.g., url or filename).}
+\title{md_read_csv_with_meta}
 \usage{
 md_read_csv_with_meta(
   file,
   read_meta = T,
   comment = "#",
-  max_meta_lns = 1000,
+  max_meta_lns = 1000L,
   ...
 )
 }

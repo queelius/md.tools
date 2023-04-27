@@ -2,7 +2,7 @@
 % Please edit documentation in R/md_tools.R
 \name{is_md}
 \alias{is_md}
-\title{Test whether an object is a masked data (\code{tbl_md}).}
+\title{is_md}
 \usage{
 is_md(x)
 }
@@ -10,5 +10,5 @@ is_md(x)
 \item{x}{object to determine if masked data}
 }
 \description{
-Test whether an object is a masked data (\code{tbl_md}).
+Test whether an object is a masked data (tbl_md).
 }

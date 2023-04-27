@@ -1,3 +1,5 @@
+#' md_write_csv_with_meta
+#'
 #' Write data frame object to a CSV (comma separated file), optionally
 #' with associated attribute data (stored as JSON in comments)
 #'
@@ -7,15 +9,30 @@
 #' @param ... additional arguments to pass
 #' @importFrom readr write_lines
 #' @importFrom readr write_csv
+#' @importFrom jsonlite write_json
+#'
 #' @export
 md_write_csv_with_meta <- function(df, file, comment="#",...)
 {
+  if (!is.data.frame(df))
+    stop("Input 'df' must be a data frame.")
+  if (!is.character(file) || length(file) != 1)
+    stop("Invalid 'file' argument. Provide a single string as the file path.")
+
+  ats <- attributes(df)
+  ats$row.names <- NULL
+  ats$names <- NULL
+  ats$problems <- NULL
+  ats$spec <- NULL
+
   tmp <- tempfile()
-  md_write_as_json(tmp,attributes(df))
+  jsonlite::write_json(ats,tmp,simplifyVector=TRUE,pretty=TRUE)
   readr::write_lines(paste0(comment," ",readLines(tmp)),file)
-  readr::write_csv(df,file,append=T,col_names=T,...)
+  readr::write_csv(df,file,append=TRUE,col_names=TRUE,...)
 }
 
+#' md_read_csv_with_meta
+#'
 #' Read a (masked) data frame table from a connection (e.g., url or filename).
 #'
 #' @param file a path to a file, a connection, or literal data
@@ -27,7 +44,7 @@ md_write_csv_with_meta <- function(df, file, comment="#",...)
 #' @importFrom readr read_csv
 #' @export
 md_read_csv_with_meta <- function(file,read_meta=T,comment="#",
-                                  max_meta_lns=1000,...)
+                                  max_meta_lns=1000L,...)
 {
   metadata <- NULL
   if (read_meta)

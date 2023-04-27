@@ -2,8 +2,7 @@
 % Please edit documentation in R/read_write.R
 \name{md_write_csv_with_meta}
 \alias{md_write_csv_with_meta}
-\title{Write data frame object to a CSV (comma separated file), optionally
-with associated attribute data (stored as JSON in comments)}
+\title{md_write_csv_with_meta}
 \usage{
 md_write_csv_with_meta(df, file, comment = "#", ...)
 }

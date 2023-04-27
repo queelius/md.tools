@@ -15,13 +15,13 @@ md_decode_matrix(df, var)
 a matrix
 }
 \description{
-An \code{nrow(df)}-by-\code{p} matrix \code{var} is encoded in
-data frame \code{df} with the columns \code{var.1},...,\code{var.p} or
-\code{var1},...,\code{varp}.
+An `nrow(df)`-by-`p` matrix `var` is encoded in
+data frame `df` with the columns `var.1`,...,`var.p` or
+`var1`,...,`varp`.
 }
 \details{
 A matrix will be returned with the appropriate ordering denoted by the
-index, e.g., \code{a.2} will come before \code{a.4}. There should be no
-gaps in the matrix indexes, e.g., if there is \code{a.4} then there must
-also be \code{a.1,a.2,a.3}.
+index, e.g., `a.2` will come before `a.4`. There should be no
+gaps in the matrix indexes, e.g., if there is `a.4` then there must
+also be `a.1,a.2,a.3`.
 }

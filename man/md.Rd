@@ -2,15 +2,21 @@
 % Please edit documentation in R/md_tools.R
 \name{md}
 \alias{md}
-\title{Constructor for masked data.}
+\title{md}
 \usage{
 md(x)
 }
 \arguments{
-\item{x}{object to convert to masked data.}
+\item{x}{An object to convert to masked data.}
+}
+\value{
+A masked data tibble with additional attributes.
 }
 \description{
-Takes an object \code{x} and converts it to masked data, a tibble (data
-frame) with some extra attributes, e.g., \code{latent} attribute to specify
-which variables are latent in the model.
+Constructor for masked data.
+}
+\details{
+Converts an object `x` to masked data, which is a tibble (data frame) with
+some extra attributes, such as the `latent` attribute to specify which
+variables are latent in the model.
 }
