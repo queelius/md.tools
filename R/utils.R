@@ -1,4 +1,3 @@
-
 # helper function
 md_read_json <- function(file,prefix="",max_lines=-1L)
 {
