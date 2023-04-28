@@ -34,9 +34,9 @@ the pipe operator `%>%`.
 You can install the development version of `md.tools` from
 [GitHub](https://github.com/queelius/md.tools) with:
 
-```{r,eval=F}
-# install.packages("devtools")
-#devtools::install_github("queelius/md.tools")
+```{r eval=F}
+install.packages("devtools")
+devtools::install_github("queelius/md.tools")
 ```
 
 We load the libraries `md.tools` and `tidyverse` with:

@@ -57,11 +57,11 @@ print(md)
 #> # A tibble: 5 × 3
 #>   c1    c2    c3   
 #>   <lgl> <lgl> <lgl>
-#> 1 TRUE  FALSE TRUE 
-#> 2 TRUE  FALSE FALSE
-#> 3 FALSE FALSE FALSE
-#> 4 FALSE TRUE  FALSE
-#> 5 TRUE  TRUE  FALSE
+#> 1 FALSE TRUE  TRUE 
+#> 2 TRUE  TRUE  TRUE 
+#> 3 TRUE  TRUE  TRUE 
+#> 4 FALSE FALSE FALSE
+#> 5 FALSE FALSE FALSE
 ```
 
 We may also decode a matrix stored in a data frame with:
@@ -84,11 +84,11 @@ md %>% md_boolean_matrix_to_charsets("c", "candidate set")
 #> # A tibble: 5 × 4
 #>   c1    c2    c3    `candidate set`
 #>   <lgl> <lgl> <lgl> <chr>          
-#> 1 TRUE  FALSE TRUE  {1, 3}         
-#> 2 TRUE  FALSE FALSE {1}            
-#> 3 FALSE FALSE FALSE {}             
-#> 4 FALSE TRUE  FALSE {2}            
-#> 5 TRUE  TRUE  FALSE {1, 2}
+#> 1 FALSE TRUE  TRUE  {2, 3}         
+#> 2 TRUE  TRUE  TRUE  {1, 2, 3}      
+#> 3 TRUE  TRUE  TRUE  {1, 2, 3}      
+#> 4 FALSE FALSE FALSE {}             
+#> 5 FALSE FALSE FALSE {}
 ```
 
 We allow converting between three representations: lists of integer
@@ -116,11 +116,11 @@ print(md)
 #> # A tibble: 5 × 4
 #>   c1    c2    c3        k
 #>   <lgl> <lgl> <lgl> <int>
-#> 1 TRUE  FALSE TRUE      2
-#> 2 TRUE  FALSE FALSE     3
-#> 3 FALSE FALSE FALSE     1
-#> 4 FALSE TRUE  FALSE     1
-#> 5 TRUE  TRUE  FALSE     3
+#> 1 FALSE TRUE  TRUE      1
+#> 2 TRUE  TRUE  TRUE      1
+#> 3 TRUE  TRUE  TRUE      2
+#> 4 FALSE FALSE FALSE     3
+#> 5 FALSE FALSE FALSE     3
 ```
 
 We may additionally have a candidate set encoded by the Boolean columns
@@ -134,11 +134,11 @@ print(md)
 #> # A tibble: 5 × 5
 #>   c1    c2    c3        k contains
 #>   <lgl> <lgl> <lgl> <int> <lgl>   
-#> 1 TRUE  FALSE TRUE      2 FALSE   
-#> 2 TRUE  FALSE FALSE     3 FALSE   
-#> 3 FALSE FALSE FALSE     1 FALSE   
-#> 4 FALSE TRUE  FALSE     1 FALSE   
-#> 5 TRUE  TRUE  FALSE     3 FALSE
+#> 1 FALSE TRUE  TRUE      1 FALSE   
+#> 2 TRUE  TRUE  TRUE      1 TRUE    
+#> 3 TRUE  TRUE  TRUE      2 TRUE    
+#> 4 FALSE FALSE FALSE     3 FALSE   
+#> 5 FALSE FALSE FALSE     3 FALSE
 ```
 
 We see that there is a new column, `contains`, that tells us whether the
@@ -156,11 +156,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains size_c
 #>   <lgl> <lgl> <lgl> <int> <lgl>     <int>
-#> 1 TRUE  FALSE TRUE      2 FALSE         2
-#> 2 TRUE  FALSE FALSE     3 FALSE         1
-#> 3 FALSE FALSE FALSE     1 FALSE         0
-#> 4 FALSE TRUE  FALSE     1 FALSE         1
-#> 5 TRUE  TRUE  FALSE     3 FALSE         2
+#> 1 FALSE TRUE  TRUE      1 FALSE         2
+#> 2 TRUE  TRUE  TRUE      1 TRUE          3
+#> 3 TRUE  TRUE  TRUE      2 TRUE          3
+#> 4 FALSE FALSE FALSE     3 FALSE         0
+#> 5 FALSE FALSE FALSE     3 FALSE         0
 ```
 
 We may *unmark* a column variable as latent with:
@@ -171,11 +171,11 @@ print(md)
 #> # A tibble: 5 × 6
 #>   c1    c2    c3        k contains size_c
 #>   <lgl> <lgl> <lgl> <int> <lgl>     <int>
-#> 1 TRUE  FALSE TRUE      2 FALSE         2
-#> 2 TRUE  FALSE FALSE     3 FALSE         1
-#> 3 FALSE FALSE FALSE     1 FALSE         0
-#> 4 FALSE TRUE  FALSE     1 FALSE         1
-#> 5 TRUE  TRUE  FALSE     3 FALSE         2
+#> 1 FALSE TRUE  TRUE      1 FALSE         2
+#> 2 TRUE  TRUE  TRUE      1 TRUE          3
+#> 3 TRUE  TRUE  TRUE      2 TRUE          3
+#> 4 FALSE FALSE FALSE     3 FALSE         0
+#> 5 FALSE FALSE FALSE     3 FALSE         0
 ```
 
 The latent variable specification is metadata about the masked data
