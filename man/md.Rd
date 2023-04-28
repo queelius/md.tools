@@ -4,10 +4,12 @@
 \alias{md}
 \title{md}
 \usage{
-md(x)
+md(x, ...)
 }
 \arguments{
 \item{x}{An object to convert to masked data.}
+
+\item{...}{pass additional arguments to `as_tibble`}
 }
 \value{
 A masked data tibble with additional attributes.

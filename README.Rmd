@@ -36,7 +36,7 @@ You can install the development version of `md.tools` from
 
 ```{r,eval=F}
 # install.packages("devtools")
-devtools::install_github("queelius/md.tools")
+#devtools::install_github("queelius/md.tools")
 ```
 
 We load the libraries `md.tools` and `tidyverse` with:
@@ -77,18 +77,16 @@ The function `md_boolean_matrix_to_list` uses the following transformation:
   the $(j,k)$-element is `TRUE`, the $j$-th vector in the
   list contains the integer $k$.
 
-For instance, suppose we wish to show `md` with a candidate set
-as a "set" of integers:
+We can show the `md` with the candidate set as a set of integers with:
 ```{r}
-as.data.frame(md %>% dplyr::select(-starts_with("c")) %>%
-  mutate("candidates"=lapply(
-    md_boolean_matrix_to_list(C),
-    function(x) { paste0("{",toString(x),"}") })))
+md %>% md_boolean_matrix_to_charsets("c", "candidate set")
 ```
 
-For completion, we allow converting between these two representations.
+We allow converting between three representations:
+lists of integer vectors, Boolean vectors, and lists of charsets (sets
+represented with strings, e.g., "{ 1, 2 }".
 Thus, the inverse of `md_boolean_matrix_to_list` is just
-`md_list_to_boolean_matrix`.
+`md_list_to_boolean_matrix` and so on.
 
 ## Decorators
 We now consider some data frame transformations that adds
@@ -113,8 +111,7 @@ we may infer whether the candidate set *contains*
 the failed component `k` with:
 
 ```{r}
-md$k <- sample(1:m,n,replace=TRUE)
-md <- md %>% md_cand_contains("c")
+md <- md %>% md_set_contains("c", "k", "contains")
 print(md)
 ```
 
@@ -128,13 +125,13 @@ a potentially more conventient format.
 Given the same data frame and candidate set, we may
 determine the *cardinality* of the candidate sets with:
 ```{r}
-md <- md %>% md_cand_sizes("c")
+md <- md %>% md_set_size("c")
 print(md)
 ```
 
 We may *unmark* a column variable as latent with:
 ```{r}
-md <- md %>% md.tools::md_unmark_latent("k")
+md <- md %>% md_unmark_latent("k")
 print(md)
 ```
 
@@ -170,15 +167,18 @@ data <- md_read_csv_with_meta("./data-raw/exp_series_md_1.csv")
 print(data)
 ```
 
-We may view all of the metadata stored in `data`, minus the `row.names`, with:
+We may view all of the metadata stored in `data` with:
 ```{r}
-attr(data,"row.names") <- NULL
-print(attributes(data))
+meta <- attributes(data)
+meta["row.names"] <- NULL
+print(meta)
 ```
+Note that we removed the `row.names` attribute, since it's quite long and
+uninformative.
 
 A lot of the metadata for `data` has to do with how the data was generated.
 In particular, we see this data is the result of a simulation
-for a series system with 3 exponentially distributed component lifetimes
+for a series system with $3$ exponentially distributed component lifetimes
 parameterized by $\lambda = (3,4,5)'$ and a candidate model consistent
 with conditions $C_1$, $C_2$, and $C_3$ for series systems with a masked
 component cause of failure in the form of candidate sets.

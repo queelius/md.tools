@@ -37,27 +37,55 @@ md_write_csv_with_meta <- function(df, file, comment="#",...)
 #'
 #' @param file a path to a file, a connection, or literal data
 #' @param read_meta whether to read in metadata to populate attributes
-#' @param comment comment indicator, defaults to \code{#}
+#' @param comment comment indicator, defaults to `#`
 #' @param max_meta_lns limit metadata search to the indicated number of lines
-#' @param ... additional arguments to pass, like \code{skip}
+#' @param ... additional arguments to pass, like `skip`
 #' @importFrom readr read_lines
 #' @importFrom readr read_csv
+#' @importFrom jsonlite parse_json
 #' @export
 md_read_csv_with_meta <- function(file,read_meta=T,comment="#",
                                   max_meta_lns=1000L,...)
 {
+  read_helper <- function(file,prefix="",max_lines=-1L)
+  {
+    pat <- paste0("^\\s*",prefix)
+    lns <- grep(pat,readLines(file,n=max_lines),value=TRUE)
+
+    parse <- NULL
+    pat <- paste0(pat,"(.*)")
+    for (i in seq_along(lns))
+      parse <- paste0(parse,gsub(pat,"\\1",lns[i]))
+
+    jsonlite::parse_json(parse,simplifyVector=TRUE)
+  }
+
+  merge_attributes <- function(existing_attrs, new_attrs)
+  {
+    # Find the intersection of attribute names (keys)
+    common_keys <- intersect(names(existing_attrs), names(new_attrs))
+
+    # Issue a warning for duplicate keys
+    if (length(common_keys) > 0) {
+      warning("The following attribute keys already exist and will be overwritten: ",
+              paste(common_keys, collapse = ", "), call. = FALSE)
+    }
+
+    # Merge the attributes, with new attributes overwriting existing ones
+    c(existing_attrs, new_attrs)
+  }
+
   metadata <- NULL
   if (read_meta)
-    metadata <- md_read_json(file,comment,max_meta_lns)
+    metadata <- read_helper(file,comment,max_meta_lns)
 
   df <- NULL
   if (is.null(metadata) && is.null(metadata$col_types))
     df <- readr::read_csv(file,comment=comment,...)
   else
     df <- readr::read_csv(file,comment=comment,
-                          col_types=metadata$col_types,
-                          ...)
+                          col_types=metadata$col_types,...)
 
-  attributes(df) <- c(attributes(df),metadata)
+  attributes(df) <- merge_attributes(attributes(df), metadata)
   md(df)
 }

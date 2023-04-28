@@ -17,11 +17,11 @@ md_read_csv_with_meta(
 
 \item{read_meta}{whether to read in metadata to populate attributes}
 
-\item{comment}{comment indicator, defaults to \code{#}}
+\item{comment}{comment indicator, defaults to `#`}
 
 \item{max_meta_lns}{limit metadata search to the indicated number of lines}
 
-\item{...}{additional arguments to pass, like \code{skip}}
+\item{...}{additional arguments to pass, like `skip`}
 }
 \description{
 Read a (masked) data frame table from a connection (e.g., url or filename).

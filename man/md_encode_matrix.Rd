@@ -2,7 +2,7 @@
 % Please edit documentation in R/md_tools.R
 \name{md_encode_matrix}
 \alias{md_encode_matrix}
-\title{Encodes a matrix as a data frame with specified columns.}
+\title{md_encode_matrix}
 \usage{
 md_encode_matrix(mat, var)
 }

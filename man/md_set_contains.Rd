@@ -4,19 +4,19 @@
 \alias{md_set_contains}
 \title{md_set_contains}
 \usage{
-md_set_contains(md, setvar = "x", elvar = "k", cname = NULL)
+md_set_contains(df, setvar, elvar, cname = NULL)
 }
 \arguments{
-\item{md}{A masked data frame.}
+\item{df}{A data frame.}
 
-\item{setvar}{A character string representing the column prefix for matrix encoding. Default is "x".}
+\item{setvar}{A character string representing the column prefix for matrix encoding.}
 
-\item{elvar}{A character string representing the column name for elements to test membership for in `setvar`. Default is "k".}
+\item{elvar}{A character string representing the column name for elements to test membership for in setvar.}
 
-\item{cname}{An optional character string for the name of the new column denoting outcomes of membership tests. Defaults to concatenating `elvar`, "_in_", and `setvar`.}
+\item{cname}{An optional character string for the name of the new column denoting outcomes of membership tests. Defaults to contains(setvar,elvar).}
 }
 \value{
-A decorated masked data frame with a new column `cname` indicating the membership test outcomes.
+A decorated data frame with a new column cname indicating the membership test outcomes.
 }
 \description{
 Decorates a data frame by adding a new column indicating whether a set
