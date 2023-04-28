@@ -26,4 +26,3 @@ Imports:
 BugReports: https://github.com/queelius/md.tools/issues
 Depends: 
     R (>= 2.10)
-pkgdown: https://queelius.github.io/md.tools/docs/
