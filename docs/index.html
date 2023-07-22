@@ -99,11 +99,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 3</span></span>
 <span><span class="co">#&gt;   c1    c2    c3   </span></span>
 <span><span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt;</span></span>
-<span><span class="co">#&gt; 1 TRUE  FALSE TRUE </span></span>
-<span><span class="co">#&gt; 2 TRUE  FALSE FALSE</span></span>
-<span><span class="co">#&gt; 3 FALSE FALSE FALSE</span></span>
-<span><span class="co">#&gt; 4 FALSE TRUE  FALSE</span></span>
-<span><span class="co">#&gt; 5 TRUE  TRUE  FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 FALSE TRUE  TRUE </span></span>
+<span><span class="co">#&gt; 2 TRUE  TRUE  TRUE </span></span>
+<span><span class="co">#&gt; 3 TRUE  TRUE  TRUE </span></span>
+<span><span class="co">#&gt; 4 FALSE FALSE FALSE</span></span>
+<span><span class="co">#&gt; 5 FALSE FALSE FALSE</span></span></code></pre></div>
 <p>We may also decode a matrix stored in a data frame with:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">C</span> <span class="op">==</span> <span class="fu"><a href="reference/md_decode_matrix.html">md_decode_matrix</a></span><span class="op">(</span><span class="va">md</span>,<span class="st">"c"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -116,11 +116,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   c1    c2    c3    `candidate set`</span></span>
 <span><span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;chr&gt;          </span></span>
-<span><span class="co">#&gt; 1 TRUE  FALSE TRUE  {1, 3}         </span></span>
-<span><span class="co">#&gt; 2 TRUE  FALSE FALSE {1}            </span></span>
-<span><span class="co">#&gt; 3 FALSE FALSE FALSE {}             </span></span>
-<span><span class="co">#&gt; 4 FALSE TRUE  FALSE {2}            </span></span>
-<span><span class="co">#&gt; 5 TRUE  TRUE  FALSE {1, 2}</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 FALSE TRUE  TRUE  {2, 3}         </span></span>
+<span><span class="co">#&gt; 2 TRUE  TRUE  TRUE  {1, 2, 3}      </span></span>
+<span><span class="co">#&gt; 3 TRUE  TRUE  TRUE  {1, 2, 3}      </span></span>
+<span><span class="co">#&gt; 4 FALSE FALSE FALSE {}             </span></span>
+<span><span class="co">#&gt; 5 FALSE FALSE FALSE {}</span></span></code></pre></div>
 <p>We allow converting between three representations: lists of integer vectors, Boolean vectors, and lists of charsets (sets represented with strings, e.g., “{ 1, 2 }”. Thus, the inverse of <code>md_boolean_matrix_to_list</code> is just <code>md_list_to_boolean_matrix</code> and so on.</p>
 </div>
 <div class="section level2">
@@ -137,11 +137,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 4</span></span>
 <span><span class="co">#&gt;   c1    c2    c3        k</span></span>
 <span><span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 TRUE  FALSE TRUE      2</span></span>
-<span><span class="co">#&gt; 2 TRUE  FALSE FALSE     3</span></span>
-<span><span class="co">#&gt; 3 FALSE FALSE FALSE     1</span></span>
-<span><span class="co">#&gt; 4 FALSE TRUE  FALSE     1</span></span>
-<span><span class="co">#&gt; 5 TRUE  TRUE  FALSE     3</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 FALSE TRUE  TRUE      1</span></span>
+<span><span class="co">#&gt; 2 TRUE  TRUE  TRUE      1</span></span>
+<span><span class="co">#&gt; 3 TRUE  TRUE  TRUE      2</span></span>
+<span><span class="co">#&gt; 4 FALSE FALSE FALSE     3</span></span>
+<span><span class="co">#&gt; 5 FALSE FALSE FALSE     3</span></span></code></pre></div>
 <p>We may additionally have a candidate set encoded by the Boolean columns <code>c1</code>,…,<code>cm</code>, in which case we may infer whether the candidate set <em>contains</em> the failed component <code>k</code> with:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="reference/md_set_contains.html">md_set_contains</a></span><span class="op">(</span><span class="st">"c"</span>, <span class="st">"k"</span>, <span class="st">"contains"</span><span class="op">)</span></span>
@@ -150,11 +150,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 5</span></span>
 <span><span class="co">#&gt;   c1    c2    c3        k contains</span></span>
 <span><span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt; &lt;lgl&gt;   </span></span>
-<span><span class="co">#&gt; 1 TRUE  FALSE TRUE      2 FALSE   </span></span>
-<span><span class="co">#&gt; 2 TRUE  FALSE FALSE     3 FALSE   </span></span>
-<span><span class="co">#&gt; 3 FALSE FALSE FALSE     1 FALSE   </span></span>
-<span><span class="co">#&gt; 4 FALSE TRUE  FALSE     1 FALSE   </span></span>
-<span><span class="co">#&gt; 5 TRUE  TRUE  FALSE     3 FALSE</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 FALSE TRUE  TRUE      1 FALSE   </span></span>
+<span><span class="co">#&gt; 2 TRUE  TRUE  TRUE      1 TRUE    </span></span>
+<span><span class="co">#&gt; 3 TRUE  TRUE  TRUE      2 TRUE    </span></span>
+<span><span class="co">#&gt; 4 FALSE FALSE FALSE     3 FALSE   </span></span>
+<span><span class="co">#&gt; 5 FALSE FALSE FALSE     3 FALSE</span></span></code></pre></div>
 <p>We see that there is a new column, <code>contains</code>, that tells us whether the candidate set actually contains the failed component. No new information is given by this column, it only presents what information that is already there in a potentially more conventient format.</p>
 <p>Given the same data frame and candidate set, we may determine the <em>cardinality</em> of the candidate sets with:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
@@ -164,11 +164,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 6</span></span>
 <span><span class="co">#&gt;   c1    c2    c3        k contains size_c</span></span>
 <span><span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt; &lt;lgl&gt;     &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 TRUE  FALSE TRUE      2 FALSE         2</span></span>
-<span><span class="co">#&gt; 2 TRUE  FALSE FALSE     3 FALSE         1</span></span>
-<span><span class="co">#&gt; 3 FALSE FALSE FALSE     1 FALSE         0</span></span>
-<span><span class="co">#&gt; 4 FALSE TRUE  FALSE     1 FALSE         1</span></span>
-<span><span class="co">#&gt; 5 TRUE  TRUE  FALSE     3 FALSE         2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 FALSE TRUE  TRUE      1 FALSE         2</span></span>
+<span><span class="co">#&gt; 2 TRUE  TRUE  TRUE      1 TRUE          3</span></span>
+<span><span class="co">#&gt; 3 TRUE  TRUE  TRUE      2 TRUE          3</span></span>
+<span><span class="co">#&gt; 4 FALSE FALSE FALSE     3 FALSE         0</span></span>
+<span><span class="co">#&gt; 5 FALSE FALSE FALSE     3 FALSE         0</span></span></code></pre></div>
 <p>We may <em>unmark</em> a column variable as latent with:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">md</span> <span class="op">&lt;-</span> <span class="va">md</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="reference/md_unmark_latent.html">md_unmark_latent</a></span><span class="op">(</span><span class="st">"k"</span><span class="op">)</span></span>
@@ -176,11 +176,11 @@
 <span><span class="co">#&gt; # A tibble: 5 × 6</span></span>
 <span><span class="co">#&gt;   c1    c2    c3        k contains size_c</span></span>
 <span><span class="co">#&gt;   &lt;lgl&gt; &lt;lgl&gt; &lt;lgl&gt; &lt;int&gt; &lt;lgl&gt;     &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1 TRUE  FALSE TRUE      2 FALSE         2</span></span>
-<span><span class="co">#&gt; 2 TRUE  FALSE FALSE     3 FALSE         1</span></span>
-<span><span class="co">#&gt; 3 FALSE FALSE FALSE     1 FALSE         0</span></span>
-<span><span class="co">#&gt; 4 FALSE TRUE  FALSE     1 FALSE         1</span></span>
-<span><span class="co">#&gt; 5 TRUE  TRUE  FALSE     3 FALSE         2</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 FALSE TRUE  TRUE      1 FALSE         2</span></span>
+<span><span class="co">#&gt; 2 TRUE  TRUE  TRUE      1 TRUE          3</span></span>
+<span><span class="co">#&gt; 3 TRUE  TRUE  TRUE      2 TRUE          3</span></span>
+<span><span class="co">#&gt; 4 FALSE FALSE FALSE     3 FALSE         0</span></span>
+<span><span class="co">#&gt; 5 FALSE FALSE FALSE     3 FALSE         0</span></span></code></pre></div>
 <p>The latent variable specification is metadata about the masked data frame, but it does not necessarily impose any requirements on algorithms applied to it.</p>
 <p>More generally, a masked data frame may have a lot more metadata about it, and we provide some tools for working with them. However, for the most part, you are expected to handle the metadata yourself. The metadata is stored in the <em>attributes</em>, and so underneath the hood, a masked data frame is just a data frame and may be treated as one.</p>
 </div>
